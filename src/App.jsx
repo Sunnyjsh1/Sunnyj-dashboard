@@ -224,6 +224,9 @@ export default function App() {
             <a className={styles.moreLink} href={NOTION.axTeam} target="_blank" rel="noreferrer">
               AX팀 공용 대시보드 →
             </a>
+            <a className={styles.moreLink} href="https://groups.office.hiworks.com/group/1025337/debates/all/" target="_blank" rel="noreferrer">
+              💬 AX추진팀 그룹채팅 →
+            </a>
           </Card>
         </div>
       </div>
