@@ -111,21 +111,22 @@ const QUICK_LINKS = [
   { label: '🤖 AI게시판(관리)', href: 'https://kpad.embrain.com/search/adminProposal.do' },
 ]
 
-const PROJECTS = [
-  { name: 'EZ Interview AI 모더레이터', badge: '🔴 높음', type: 'red', href: NOTION.ezInterview, group: 'ax', due: '2026.04.30' },
-  { name: '합성패널', badge: '🔴 높음', type: 'red', href: NOTION.synth, group: 'ax', due: '2026.05.15' },
-  { name: 'AI 모더레이터 고도화', badge: '🟡 중간', type: 'yellow', href: NOTION.aiMod, group: 'ax', due: '2026.06.30' },
-  { name: '업무자동화', badge: '🟡 중간', type: 'yellow', href: NOTION.automate, group: 'ax', due: '상시' },
-  { name: '동호회', badge: '진행 중', type: 'yellow', href: NOTION.club, group: 'church', due: '상시' },
-  { name: '신자노트 제작', badge: '진행 중', type: 'yellow', href: NOTION.note, group: 'church', due: '2026.05.31' },
-  { name: '성경 출판', badge: '진행 중', type: 'yellow', href: NOTION.bible, group: 'church', due: '2026.06.30' },
-  { name: 'WALK (산책)', badge: '제작 중', type: 'purple', href: NOTION.walk, group: 'creative', due: '2026.05.30' },
+const FALLBACK_PROJECTS = [
+  { name: 'EZ Interview AI 모더레이터', badge: '🔴 높음', type: 'red', href: NOTION.ezInterview, group: 'ax', due: '-' },
+  { name: '합성패널', badge: '🔴 높음', type: 'red', href: NOTION.synth, group: 'ax', due: '-' },
+  { name: 'AI 모더레이터 고도화', badge: '🟡 중간', type: 'yellow', href: NOTION.aiMod, group: 'ax', due: '-' },
+  { name: '업무자동화', badge: '🟡 중간', type: 'yellow', href: NOTION.automate, group: 'ax', due: '-' },
+  { name: '동호회', badge: '진행 중', type: 'yellow', href: NOTION.club, group: 'church', due: '-' },
+  { name: '신자노트 제작', badge: '진행 중', type: 'yellow', href: NOTION.note, group: 'church', due: '-' },
+  { name: '성경 출판', badge: '진행 중', type: 'yellow', href: NOTION.bible, group: 'church', due: '-' },
+  { name: 'WALK (산책)', badge: '제작 중', type: 'purple', href: NOTION.walk, group: 'creative', due: '미정' },
   { name: 'MAZU: THE GREAT WORK', badge: '기획 중', type: 'blue', href: NOTION.mazu, group: 'creative', due: '미정' },
 ]
 
 export default function App() {
   const [dateStr, setDateStr] = useState('')
   const [query, setQuery] = useState('')
+  const [allProjects, setAllProjects] = useState(FALLBACK_PROJECTS)
   const [aiTools, setAiTools] = useState(loadAiTools)
   const [editMode, setEditMode] = useState(false)
   const [newLabel, setNewLabel] = useState('')
@@ -154,9 +155,19 @@ export default function App() {
     setDateStr(`${y}.${m}.${day} (${days[d.getDay()]})`)
   }, [])
 
+  useEffect(() => {
+    fetch('/api/projects')
+      .then(r => r.json())
+      .then(data => {
+        const merged = [...(data.projects || []), ...(data.creatives || [])]
+        if (merged.length > 0) setAllProjects(merged)
+      })
+      .catch(() => {})
+  }, [])
+
   const q = query.trim().toLowerCase()
   const filteredLinks = q ? QUICK_LINKS.filter(l => l.label.toLowerCase().includes(q)) : QUICK_LINKS
-  const filteredProjects = q ? PROJECTS.filter(p => p.name.toLowerCase().includes(q) || p.badge.includes(q)) : PROJECTS
+  const filteredProjects = q ? allProjects.filter(p => p.name.toLowerCase().includes(q) || p.badge.includes(q)) : allProjects
   const axProjects = filteredProjects.filter(p => p.group === 'ax')
   const churchProjects = filteredProjects.filter(p => p.group === 'church')
   const creativeProjects = filteredProjects.filter(p => p.group === 'creative')
