@@ -5,10 +5,7 @@ const NOTION = {
   projects:   'https://www.notion.so/d65d7c1584104496aa782401dee7554a',
   axTeam:     'https://www.notion.so/338d7056d19d81efaa3fe9be70900610',
   aiAssets:   'https://www.notion.so/338d7056d19d81da8434c26d1ba4a501',
-  education:  'https://www.notion.so/b29e69c05c6f4a86b8bef53b92a3e106',
-  axSupport:  'https://www.notion.so/77a5b37cefa0454d9fc83996f186351a',
   teamOps:    'https://www.notion.so/338d7056d19d81e6a924e8ddbbdad845',
-  creative:   'https://www.notion.so/4508f688830b4c59ba8177c28b7825f0',
   church:     'https://www.notion.so/338d7056d19d8164b925c6a069a3c7c8',
   guide:      'https://www.notion.so/338d7056d19d81eab55deb2b53170aa1',
   churchPage: 'https://www.notion.so/338d7056d19d818a99dfe3c534530dcc',
@@ -301,7 +298,6 @@ export default function App() {
         <div className={styles.cols2}>
           <Card title="🙋 AX 지원 현황">
             <div className={styles.emptyState}>미처리 문의가 없어요</div>
-            <a className={styles.moreLink} href={NOTION.axSupport} target="_blank" rel="noreferrer">
               AX 지원 DB →
             </a>
           </Card>

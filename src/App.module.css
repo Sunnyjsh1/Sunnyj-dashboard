@@ -362,3 +362,81 @@
 @media (max-width: 720px) {
   .cols3, .cols2 { grid-template-columns: 1fr; }
 }
+
+/* 4-column grid for stat cards */
+.cols4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+/* Project row wrapper (expandable) */
+.prowWrap {
+  border-bottom: 1px solid var(--border);
+}
+.prowWrap:last-of-type { border-bottom: none; }
+.prowWrap .prow { border-bottom: none; }
+
+.prowLink {
+  flex: 1;
+  min-width: 0;
+  transition: opacity 0.12s;
+}
+.prowLink:hover { opacity: 0.6; }
+
+/* Expand button */
+.expandBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 10px;
+  color: var(--text-hint);
+  padding: 2px 4px;
+  margin-right: 4px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.expandBtn:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+/* Asset count badge */
+.assetCount {
+  font-size: 9px;
+  font-weight: 700;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 10px;
+  padding: 1px 6px;
+  margin-left: 6px;
+  flex-shrink: 0;
+}
+
+/* Asset list (expanded) */
+.assetList {
+  padding: 4px 0 8px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.assetRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 0;
+  transition: opacity 0.12s;
+}
+.assetRow:hover { opacity: 0.6; }
+.assetTitle {
+  font-size: 11px;
+  color: var(--text-sub);
+}
+
+/* Responsive additions */
+@media (max-width: 720px) {
+  .cols4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .cols4 { grid-template-columns: 1fr; }
+}
