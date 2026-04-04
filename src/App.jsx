@@ -73,6 +73,29 @@ function QuickBtn({ href, children }) {
   )
 }
 
+const DEFAULT_AI_TOOLS = [
+  { label: '✦ Gemini', href: 'https://gemini.google.com/' },
+  { label: '✸ Claude', href: 'https://claude.ai/' },
+  { label: '◎ GPT 4.0', href: 'https://chatgpt.com/' },
+  { label: '📓 노트북LM', href: 'https://notebooklm.google.com/' },
+  { label: '🎬 구글AI스튜디오', href: 'https://aistudio.google.com/' },
+  { label: '⚡ 젠스파크', href: 'https://www.genspark.ai/' },
+  { label: '🎨 CANVA', href: 'https://www.canva.com/' },
+  { label: '📊 감마', href: 'https://gamma.app/' },
+  { label: '📝 노션', href: 'https://www.notion.so/' },
+  { label: '🧠 AI프롬프트 고급', href: 'https://www.promptingguide.ai/' },
+]
+
+function loadAiTools() {
+  try {
+    const saved = localStorage.getItem('aiTools')
+    return saved ? JSON.parse(saved) : DEFAULT_AI_TOOLS
+  } catch { return DEFAULT_AI_TOOLS }
+}
+function saveAiTools(tools) {
+  localStorage.setItem('aiTools', JSON.stringify(tools))
+}
+
 const QUICK_LINKS = [
   { label: '🚀 전체 프로젝트', href: NOTION.projects },
   { label: '📊 AX팀 공용', href: NOTION.axTeam },
@@ -103,6 +126,24 @@ const PROJECTS = [
 export default function App() {
   const [dateStr, setDateStr] = useState('')
   const [query, setQuery] = useState('')
+  const [aiTools, setAiTools] = useState(loadAiTools)
+  const [editMode, setEditMode] = useState(false)
+  const [newLabel, setNewLabel] = useState('')
+  const [newHref, setNewHref] = useState('')
+
+  function addTool() {
+    if (!newLabel.trim() || !newHref.trim()) return
+    const updated = [...aiTools, { label: newLabel.trim(), href: newHref.trim() }]
+    setAiTools(updated)
+    saveAiTools(updated)
+    setNewLabel('')
+    setNewHref('')
+  }
+  function removeTool(idx) {
+    const updated = aiTools.filter((_, i) => i !== idx)
+    setAiTools(updated)
+    saveAiTools(updated)
+  }
 
   useEffect(() => {
     const d = new Date()
@@ -131,6 +172,42 @@ export default function App() {
           ))}
           {q && filteredLinks.length === 0 && (
             <div className={styles.noResult}>결과 없음</div>
+          )}
+        </nav>
+
+        <div className={styles.sidebarDivider} />
+
+        <div className={styles.sidebarTitleRow}>
+          <div className={styles.sidebarTitle}>🛠 AI 도구</div>
+          <button className={styles.editToggle} onClick={() => setEditMode(!editMode)}>
+            {editMode ? '완료' : '편집'}
+          </button>
+        </div>
+        <nav className={styles.sidebarNav}>
+          {aiTools.map((t, i) => (
+            <div key={i} className={styles.toolRow}>
+              <a className={styles.quickBtn} href={t.href} target="_blank" rel="noreferrer">{t.label}</a>
+              {editMode && (
+                <button className={styles.removeBtn} onClick={() => removeTool(i)}>✕</button>
+              )}
+            </div>
+          ))}
+          {editMode && (
+            <div className={styles.addForm}>
+              <input
+                className={styles.addInput}
+                placeholder="이름"
+                value={newLabel}
+                onChange={e => setNewLabel(e.target.value)}
+              />
+              <input
+                className={styles.addInput}
+                placeholder="URL"
+                value={newHref}
+                onChange={e => setNewHref(e.target.value)}
+              />
+              <button className={styles.addBtn} onClick={addTool}>추가</button>
+            </div>
           )}
         </nav>
       </aside>
