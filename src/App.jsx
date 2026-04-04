@@ -4,19 +4,11 @@ import styles from './App.module.css'
 const NOTION = {
   projects:   'https://www.notion.so/d65d7c1584104496aa782401dee7554a',
   axTeam:     'https://www.notion.so/338d7056d19d81efaa3fe9be70900610',
-  aiAssets:   'https://www.notion.so/338d7056d19d81da8434c26d1ba4a501',
+  aiAssets:   'https://www.notion.so/38212f29c4464fdf9192d11d98eaf51f',
   teamOps:    'https://www.notion.so/338d7056d19d81e6a924e8ddbbdad845',
-  church:     'https://www.notion.so/338d7056d19d8164b925c6a069a3c7c8',
+
   churchPage: 'https://www.notion.so/338d7056d19d818a99dfe3c534530dcc',
-  ezInterview:'https://www.notion.so/338d7056d19d81dd886bc228847e097a',
-  synth:      'https://www.notion.so/338d7056d19d81acad2aca71f03ac7f1',
-  aiMod:      'https://www.notion.so/338d7056d19d81e3877fd9da9b4e1c2f',
-  automate:   'https://www.notion.so/338d7056d19d816194ccec41be06efb0',
-  club:       'https://www.notion.so/338d7056d19d812f9b7ff39caf646fbb',
-  note:       'https://www.notion.so/338d7056d19d814e999ff1164953fe8b',
-  bible:      'https://www.notion.so/338d7056d19d81f9be6fd5a9eb716535',
-  walk:       'https://www.notion.so/338d7056d19d8135b28de9b187e32f2b',
-  mazu:       'https://www.notion.so/338d7056d19d81c0a294fe619461c1e4',
+
 }
 
 const CAL_URL =
@@ -244,13 +236,10 @@ export default function App() {
         {/* 숫자 카드 */}
         <div className={styles.cols2}>
           <Card title="진행 중 프로젝트">
-            <div className={styles.stat}>8</div>
-            <div className={styles.statSub}>AX 4 · 성당 3 · Creative 1</div>
+            <div className={styles.stat}>{filteredProjects.length}</div>
+            <div className={styles.statSub}>AX {axProjects.length} · 성당 {churchProjects.length} · Creative {creativeProjects.length}</div>
           </Card>
-          <Card title="AX 지원 미처리">
-            <div className={styles.stat}>0</div>
-            <div className={styles.statSub}>현재 미처리 문의 없음</div>
-          </Card>
+
           <Card title="완료된 프로젝트">
             <div className={styles.stat}>2</div>
             <div className={styles.statSub}>사진 아카이브 · AI 전자책</div>
@@ -272,12 +261,20 @@ export default function App() {
             {churchProjects.length > 0 ? churchProjects.map(p => (
               <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} due={p.due} />
             )) : <div className={styles.noResult}>검색 결과 없음</div>}
+          
+            <a className={styles.moreLink} href={NOTION.churchPage} target="_blank" rel="noreferrer">
+              성당기획팀 프로젝트 →
+            </a>
           </Card>
 
           <Card title="🎬 AI Creative">
             {creativeProjects.length > 0 ? creativeProjects.map(p => (
               <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} due={p.due} />
             )) : <div className={styles.noResult}>검색 결과 없음</div>}
+          
+            <a className={styles.moreLink} href={NOTION.projects} target="_blank" rel="noreferrer">
+              전체 프로젝트 DB →
+            </a>
           </Card>
         </div>
 
@@ -292,13 +289,9 @@ export default function App() {
           />
         </Card>
 
-        {/* AX 지원 + 팀 공지 */}
+        {/* 팀 공지 */}
         <div className={styles.cols2}>
-          <Card title="🙋 AX 지원 현황">
-            <div className={styles.emptyState}>미처리 문의가 없어요</div>
-              AX 지원 DB →
-            </a>
-          </Card>
+          
           <Card title="📣 팀 공지 · 메모">
             <div className={styles.noticeRow}>💡 매주 월요일 업데이트</div>
             <a className={styles.moreLink} href={NOTION.axTeam} target="_blank" rel="noreferrer">
