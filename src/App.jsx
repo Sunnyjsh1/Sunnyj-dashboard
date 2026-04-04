@@ -98,12 +98,10 @@ function saveAiTools(tools) {
 
 const QUICK_LINKS = [
   { label: '🚀 전체 프로젝트', href: NOTION.projects },
-  { label: '📊 AX팀 공용', href: NOTION.axTeam },
+  { label: '📋 업무 DB', href: NOTION.tasks },
   { label: '📚 AI Assets DB', href: NOTION.aiAssets },
-  { label: '🎓 교육·전파', href: NOTION.education },
-  { label: '🙋 AX 지원', href: NOTION.axSupport },
+  { label: '📊 AX팀 공용', href: NOTION.axTeam },
   { label: '👥 팀 운영', href: NOTION.teamOps },
-  { label: '🎬 AI Creative', href: NOTION.creative },
   { label: '⛪ 성당 기획팀', href: NOTION.church },
   { label: '📘 운영가이드', href: NOTION.guide },
   { label: '📧 하이웍스 메일', href: 'https://dashboard.office.hiworks.com/' },
