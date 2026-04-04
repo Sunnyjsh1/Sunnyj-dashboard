@@ -99,7 +99,6 @@ function saveAiTools(tools) {
 const QUICK_LINKS = [
   { label: '🚀 전체 프로젝트', href: NOTION.projects },
   { label: '📚 AI Assets DB', href: NOTION.aiAssets },
-  { label: '📊 AX팀 공용', href: NOTION.axTeam },
   { label: '👥 팀 운영', href: NOTION.teamOps },
   { label: '⛪ 성당 기획팀', href: NOTION.church },
   { label: '📘 운영가이드', href: NOTION.guide },
