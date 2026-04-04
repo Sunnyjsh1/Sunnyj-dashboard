@@ -1,3 +1,4 @@
+// Notion API integration
 const PROJECT_DB = 'd65d7c1584104496aa782401dee7554a'
 const CREATIVE_DB = '4508f688830b4c59ba8177c28b7825f0'
 
