@@ -183,7 +183,14 @@
 }
 .prow:last-of-type { border-bottom: none; }
 .prow:hover { opacity: 0.6; }
-.prowName { font-size: 12px; color: var(--text); }
+.prowName { font-size: 12px; color: var(--text); flex: 1; min-width: 0; }
+.prowDue {
+  font-size: 10px;
+  color: var(--text-hint);
+  white-space: nowrap;
+  margin: 0 8px;
+  flex-shrink: 0;
+}
 
 /* Badge */
 .badge {

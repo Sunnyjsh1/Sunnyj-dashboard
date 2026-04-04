@@ -46,10 +46,11 @@ function Badge({ type, children }) {
   )
 }
 
-function ProjectRow({ href, name, badge, type }) {
+function ProjectRow({ href, name, badge, type, due }) {
   return (
     <a className={styles.prow} href={href} target="_blank" rel="noreferrer">
       <span className={styles.prowName}>{name}</span>
+      <span className={styles.prowDue}>{due}</span>
       <Badge type={type}>{badge}</Badge>
     </a>
   )
@@ -88,15 +89,15 @@ const QUICK_LINKS = [
 ]
 
 const PROJECTS = [
-  { name: 'EZ Interview AI 모더레이터', badge: '🔴 높음', type: 'red', href: NOTION.ezInterview, group: 'ax' },
-  { name: '합성패널', badge: '🔴 높음', type: 'red', href: NOTION.synth, group: 'ax' },
-  { name: 'AI 모더레이터 고도화', badge: '🟡 중간', type: 'yellow', href: NOTION.aiMod, group: 'ax' },
-  { name: '업무자동화', badge: '🟡 중간', type: 'yellow', href: NOTION.automate, group: 'ax' },
-  { name: '동호회', badge: '진행 중', type: 'yellow', href: NOTION.club, group: 'church' },
-  { name: '신자노트 제작', badge: '진행 중', type: 'yellow', href: NOTION.note, group: 'church' },
-  { name: '성경 출판', badge: '진행 중', type: 'yellow', href: NOTION.bible, group: 'church' },
-  { name: 'WALK (산책)', badge: '제작 중', type: 'purple', href: NOTION.walk, group: 'creative' },
-  { name: 'MAZU: THE GREAT WORK', badge: '기획 중', type: 'blue', href: NOTION.mazu, group: 'creative' },
+  { name: 'EZ Interview AI 모더레이터', badge: '🔴 높음', type: 'red', href: NOTION.ezInterview, group: 'ax', due: '2026.04.30' },
+  { name: '합성패널', badge: '🔴 높음', type: 'red', href: NOTION.synth, group: 'ax', due: '2026.05.15' },
+  { name: 'AI 모더레이터 고도화', badge: '🟡 중간', type: 'yellow', href: NOTION.aiMod, group: 'ax', due: '2026.06.30' },
+  { name: '업무자동화', badge: '🟡 중간', type: 'yellow', href: NOTION.automate, group: 'ax', due: '상시' },
+  { name: '동호회', badge: '진행 중', type: 'yellow', href: NOTION.club, group: 'church', due: '상시' },
+  { name: '신자노트 제작', badge: '진행 중', type: 'yellow', href: NOTION.note, group: 'church', due: '2026.05.31' },
+  { name: '성경 출판', badge: '진행 중', type: 'yellow', href: NOTION.bible, group: 'church', due: '2026.06.30' },
+  { name: 'WALK (산책)', badge: '제작 중', type: 'purple', href: NOTION.walk, group: 'creative', due: '2026.05.30' },
+  { name: 'MAZU: THE GREAT WORK', badge: '기획 중', type: 'blue', href: NOTION.mazu, group: 'creative', due: '미정' },
 ]
 
 export default function App() {
@@ -176,24 +177,25 @@ export default function App() {
         </div>
 
         {/* 프로젝트 현황 */}
-        <div className={styles.cols2}>
+        <div className={styles.cols3}>
           <Card title="🚀 AX팀 프로젝트">
             {axProjects.length > 0 ? axProjects.map(p => (
-              <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} />
+              <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} due={p.due} />
             )) : <div className={styles.noResult}>검색 결과 없음</div>}
             <a className={styles.moreLink} href={NOTION.projects} target="_blank" rel="noreferrer">
               전체 프로젝트 DB →
             </a>
           </Card>
 
-          <Card title="⛪ 성당 기획팀 · 🎬 AI Creative">
-            <div className={styles.groupLabel}>성당 기획팀</div>
+          <Card title="⛪ 성당 기획팀">
             {churchProjects.length > 0 ? churchProjects.map(p => (
-              <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} />
+              <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} due={p.due} />
             )) : <div className={styles.noResult}>검색 결과 없음</div>}
-            <div className={styles.groupLabel}>AI Creative</div>
+          </Card>
+
+          <Card title="🎬 AI Creative">
             {creativeProjects.length > 0 ? creativeProjects.map(p => (
-              <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} />
+              <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} due={p.due} />
             )) : <div className={styles.noResult}>검색 결과 없음</div>}
           </Card>
         </div>
