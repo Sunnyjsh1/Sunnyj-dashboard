@@ -65,10 +65,10 @@ module.exports = async function handler(req, res) {
       const priority = getSelect(p, '우선순위')
       const status = getSelect(p, '상태')
       let type = 'yellow'
-      let badge = priority || status
-      if (priority === '높음') { type = 'red'; badge = '🔴 높음' }
-      else if (priority === '중간') { type = 'yellow'; badge = '🟡 중간' }
-      else if (priority === '낮음') { type = 'green'; badge = '🟢 낮음' }
+      let badge = status
+      if (priority === '높음') { type = 'red' }
+      else if (priority === '중간') { type = 'yellow' }
+      else if (priority === '낮음') { type = 'green' }
 
       // AI Creative: 상태별 스타일
       if (group === 'creative') {
