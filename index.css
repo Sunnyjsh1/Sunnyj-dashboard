@@ -1,0 +1,31 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #F5F4F0;
+  --surface: #FFFFFF;
+  --surface2: #EEEDE8;
+  --border: rgba(0,0,0,0.08);
+  --text: #1A1A1A;
+  --text-sub: #666666;
+  --text-hint: #999999;
+  --accent: #2563EB;
+  --red: #DC2626;
+  --yellow: #D97706;
+  --green: #16A34A;
+  --purple: #7C3AED;
+  --blue: #2563EB;
+  --radius: 12px;
+  --radius-sm: 8px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo',
+    'Malgun Gothic', 'Noto Sans KR', 'Segoe UI', sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+a { text-decoration: none; color: inherit; }
