@@ -249,7 +249,7 @@ export default function App() {
         <div className={styles.cols3}>
           <Card title="🚀 AX팀 프로젝트">
             {axProjects.length > 0 ? axProjects.map(p => (
-              <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} due={p.due} />
+              <ProjectRow key={p.href} href={p.href} name={p.assignee ? p.name + ' (' + p.assignee + ')' : p.name} badge={p.badge} type={p.type} due={p.due} />
             )) : <div className={styles.noResult}>검색 결과 없음</div>}
             <a className={styles.moreLink} href={NOTION.projects} target="_blank" rel="noreferrer">
               전체 프로젝트 DB →

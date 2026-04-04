@@ -30,6 +30,13 @@ function getTitle(props, key) {
 function getSelect(props, key) {
   return props[key]?.select?.name || ''
 }
+function getText(props, key) {
+  const p = props[key]
+  if (!p) return ""
+  if (p.type === "rich_text") return p.rich_text.map(t => t.plain_text).join("")
+  return ""
+}
+
 function getDate(props, key) {
   return props[key]?.date?.start || ''
 }
@@ -74,6 +81,7 @@ module.exports = async function handler(req, res) {
       return {
         id: page.id,
         name: getTitle(p, '프로젝트명'),
+        assignee: getText(p, '담당자'),
         badge, type, group,
         href: page.url,
         due: due ? due.replace(/-/g, '.') : '-',
