@@ -39,15 +39,7 @@ module.exports = async function handler(req, res) {
 
   const token = process.env.NOTION_TOKEN
   if (!token) {
-    return res.status(500).json({
-      error: 'NOTION_TOKEN not configured',
-      debug: {
-        projectId: process.env.VERCEL_PROJECT_ID,
-        projectName: process.env.VERCEL_PROJECT_NAME,
-        url: process.env.VERCEL_URL,
-        hasNotion: 'NOTION_TOKEN' in process.env
-      }
-    })
+    return res.status(500).json({ error: 'NOTION_TOKEN not configured' })
   }
 
   try {
