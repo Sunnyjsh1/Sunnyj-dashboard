@@ -173,6 +173,7 @@ export default function App() {
           <QuickBtn href={NOTION.creative}>🎬 AI Creative</QuickBtn>
           <QuickBtn href={NOTION.church}>⛪ 성당 기획팀</QuickBtn>
           <QuickBtn href={NOTION.guide}>📘 운영가이드</QuickBtn>
+          <QuickBtn href="https://dashboard.office.hiworks.com/">📧 하이웍스 메일</QuickBtn>
         </div>
       </Card>
     </div>
