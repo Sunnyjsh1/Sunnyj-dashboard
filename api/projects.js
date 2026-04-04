@@ -39,10 +39,14 @@ module.exports = async function handler(req, res) {
 
   const token = process.env.NOTION_TOKEN
   if (!token) {
-    const envKeys = Object.keys(process.env).filter(k => k.includes('NOTION') || k.includes('VERCEL'))
     return res.status(500).json({
       error: 'NOTION_TOKEN not configured',
-      debug: { envKeys, nodeEnv: process.env.NODE_ENV }
+      debug: {
+        projectId: process.env.VERCEL_PROJECT_ID,
+        projectName: process.env.VERCEL_PROJECT_NAME,
+        url: process.env.VERCEL_URL,
+        hasNotion: 'NOTION_TOKEN' in process.env
+      }
     })
   }
 
