@@ -72,8 +72,36 @@ function QuickBtn({ href, children }) {
   )
 }
 
+const QUICK_LINKS = [
+  { label: '🚀 전체 프로젝트', href: NOTION.projects },
+  { label: '📊 AX팀 공용', href: NOTION.axTeam },
+  { label: '📚 AI Assets DB', href: NOTION.aiAssets },
+  { label: '🎓 교육·전파', href: NOTION.education },
+  { label: '🙋 AX 지원', href: NOTION.axSupport },
+  { label: '👥 팀 운영', href: NOTION.teamOps },
+  { label: '🎬 AI Creative', href: NOTION.creative },
+  { label: '⛪ 성당 기획팀', href: NOTION.church },
+  { label: '📘 운영가이드', href: NOTION.guide },
+  { label: '📧 하이웍스 메일', href: 'https://dashboard.office.hiworks.com/' },
+  { label: '🤖 AI게시판', href: 'https://kp.embrain.com/search/loginpage.do' },
+  { label: '🤖 AI게시판(관리)', href: 'https://kpad.embrain.com/search/adminProposal.do' },
+]
+
+const PROJECTS = [
+  { name: 'EZ Interview AI 모더레이터', badge: '🔴 높음', type: 'red', href: NOTION.ezInterview, group: 'ax' },
+  { name: '합성패널', badge: '🔴 높음', type: 'red', href: NOTION.synth, group: 'ax' },
+  { name: 'AI 모더레이터 고도화', badge: '🟡 중간', type: 'yellow', href: NOTION.aiMod, group: 'ax' },
+  { name: '업무자동화', badge: '🟡 중간', type: 'yellow', href: NOTION.automate, group: 'ax' },
+  { name: '동호회', badge: '진행 중', type: 'yellow', href: NOTION.club, group: 'church' },
+  { name: '신자노트 제작', badge: '진행 중', type: 'yellow', href: NOTION.note, group: 'church' },
+  { name: '성경 출판', badge: '진행 중', type: 'yellow', href: NOTION.bible, group: 'church' },
+  { name: 'WALK (산책)', badge: '제작 중', type: 'purple', href: NOTION.walk, group: 'creative' },
+  { name: 'MAZU: THE GREAT WORK', badge: '기획 중', type: 'blue', href: NOTION.mazu, group: 'creative' },
+]
+
 export default function App() {
   const [dateStr, setDateStr] = useState('')
+  const [query, setQuery] = useState('')
 
   useEffect(() => {
     const d = new Date()
@@ -84,24 +112,25 @@ export default function App() {
     setDateStr(`${y}.${m}.${day} (${days[d.getDay()]})`)
   }, [])
 
+  const q = query.trim().toLowerCase()
+  const filteredLinks = q ? QUICK_LINKS.filter(l => l.label.toLowerCase().includes(q)) : QUICK_LINKS
+  const filteredProjects = q ? PROJECTS.filter(p => p.name.toLowerCase().includes(q) || p.badge.includes(q)) : PROJECTS
+  const axProjects = filteredProjects.filter(p => p.group === 'ax')
+  const churchProjects = filteredProjects.filter(p => p.group === 'church')
+  const creativeProjects = filteredProjects.filter(p => p.group === 'creative')
+
   return (
     <div className={styles.page}>
       {/* 왼쪽 사이드바 — 빠른 이동 */}
       <aside className={styles.sidebar}>
         <div className={styles.sidebarTitle}>⚡ 빠른 이동</div>
         <nav className={styles.sidebarNav}>
-          <QuickBtn href={NOTION.projects}>🚀 전체 프로젝트</QuickBtn>
-          <QuickBtn href={NOTION.axTeam}>📊 AX팀 공용</QuickBtn>
-          <QuickBtn href={NOTION.aiAssets}>📚 AI Assets DB</QuickBtn>
-          <QuickBtn href={NOTION.education}>🎓 교육·전파</QuickBtn>
-          <QuickBtn href={NOTION.axSupport}>🙋 AX 지원</QuickBtn>
-          <QuickBtn href={NOTION.teamOps}>👥 팀 운영</QuickBtn>
-          <QuickBtn href={NOTION.creative}>🎬 AI Creative</QuickBtn>
-          <QuickBtn href={NOTION.church}>⛪ 성당 기획팀</QuickBtn>
-          <QuickBtn href={NOTION.guide}>📘 운영가이드</QuickBtn>
-          <QuickBtn href="https://dashboard.office.hiworks.com/">📧 하이웍스 메일</QuickBtn>
-          <QuickBtn href="https://kp.embrain.com/search/loginpage.do">🤖 AI게시판</QuickBtn>
-          <QuickBtn href="https://kpad.embrain.com/search/adminProposal.do">🤖 AI게시판(관리)</QuickBtn>
+          {filteredLinks.map(l => (
+            <QuickBtn key={l.href} href={l.href}>{l.label}</QuickBtn>
+          ))}
+          {q && filteredLinks.length === 0 && (
+            <div className={styles.noResult}>결과 없음</div>
+          )}
         </nav>
       </aside>
 
@@ -115,6 +144,20 @@ export default function App() {
           </div>
           <span className={styles.dateChip}>{dateStr}</span>
         </header>
+
+        {/* 검색 */}
+        <div className={styles.searchWrap}>
+          <input
+            className={styles.searchInput}
+            type="text"
+            placeholder="🔍 프로젝트·링크 검색..."
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+          />
+          {query && (
+            <button className={styles.searchClear} onClick={() => setQuery('')}>✕</button>
+          )}
+        </div>
 
         {/* 숫자 카드 */}
         <div className={styles.cols3}>
@@ -135,10 +178,9 @@ export default function App() {
         {/* 프로젝트 현황 */}
         <div className={styles.cols2}>
           <Card title="🚀 AX팀 프로젝트">
-            <ProjectRow href={NOTION.ezInterview} name="EZ Interview AI 모더레이터" badge="🔴 높음" type="red" />
-            <ProjectRow href={NOTION.synth}       name="합성패널"                   badge="🔴 높음" type="red" />
-            <ProjectRow href={NOTION.aiMod}       name="AI 모더레이터 고도화"       badge="🟡 중간" type="yellow" />
-            <ProjectRow href={NOTION.automate}    name="업무자동화"                 badge="🟡 중간" type="yellow" />
+            {axProjects.length > 0 ? axProjects.map(p => (
+              <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} />
+            )) : <div className={styles.noResult}>검색 결과 없음</div>}
             <a className={styles.moreLink} href={NOTION.projects} target="_blank" rel="noreferrer">
               전체 프로젝트 DB →
             </a>
@@ -146,12 +188,13 @@ export default function App() {
 
           <Card title="⛪ 성당 기획팀 · 🎬 AI Creative">
             <div className={styles.groupLabel}>성당 기획팀</div>
-            <ProjectRow href={NOTION.club}  name="동호회"       badge="진행 중" type="yellow" />
-            <ProjectRow href={NOTION.note}  name="신자노트 제작" badge="진행 중" type="yellow" />
-            <ProjectRow href={NOTION.bible} name="성경 출판"     badge="진행 중" type="yellow" />
+            {churchProjects.length > 0 ? churchProjects.map(p => (
+              <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} />
+            )) : <div className={styles.noResult}>검색 결과 없음</div>}
             <div className={styles.groupLabel}>AI Creative</div>
-            <ProjectRow href={NOTION.walk}  name="WALK (산책)"            badge="제작 중" type="purple" />
-            <ProjectRow href={NOTION.mazu}  name="MAZU: THE GREAT WORK"   badge="기획 중" type="blue" />
+            {creativeProjects.length > 0 ? creativeProjects.map(p => (
+              <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} />
+            )) : <div className={styles.noResult}>검색 결과 없음</div>}
           </Card>
         </div>
 
