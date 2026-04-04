@@ -157,7 +157,7 @@ export default function App() {
     fetch('/api/projects')
       .then(r => r.json())
       .then(data => {
-        const merged = [...(data.projects || []), ...(data.creatives || [])]
+        const merged = [...(data.projects || []), ...(data.churchProjects || [])]
         if (merged.length > 0) setAllProjects(merged)
       })
       .catch(() => {})
