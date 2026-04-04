@@ -94,9 +94,9 @@ function saveAiTools(tools) {
 }
 
 const QUICK_LINKS = [
-  { label: '🚀 전체 프로젝트', href: NOTION.projects },
-  { label: '📚 AI Assets DB', href: NOTION.aiAssets },
-  { label: '👥 팀 운영', href: NOTION.teamOps },
+  { label: '🚀 프로젝트', href: NOTION.projects },
+  { label: '📚 Asset', href: NOTION.aiAssets },
+  { label: '👥 Team', href: NOTION.teamOps },
   { label: '📧 하이웍스 메일', href: 'https://dashboard.office.hiworks.com/' },
   { label: '🤖 AI게시판', href: 'https://kp.embrain.com/search/loginpage.do' },
   { label: '🤖 AI게시판(관리)', href: 'https://kpad.embrain.com/search/adminProposal.do' },
