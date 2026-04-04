@@ -174,6 +174,8 @@ export default function App() {
           <QuickBtn href={NOTION.church}>⛪ 성당 기획팀</QuickBtn>
           <QuickBtn href={NOTION.guide}>📘 운영가이드</QuickBtn>
           <QuickBtn href="https://dashboard.office.hiworks.com/">📧 하이웍스 메일</QuickBtn>
+          <QuickBtn href="https://kp.embrain.com/search/loginpage.do">🤖 AI게시판</QuickBtn>
+          <QuickBtn href="https://kpad.embrain.com/search/adminProposal.do">🤖 AI게시판(관리)</QuickBtn>
         </div>
       </Card>
     </div>
