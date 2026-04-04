@@ -1,18 +1,20 @@
-const NOTION_TOKEN = process.env.NOTION_TOKEN
 const PROJECT_DB = 'd65d7c1584104496aa782401dee7554a'
 const CREATIVE_DB = '4508f688830b4c59ba8177c28b7825f0'
 
-async function queryDB(dbId) {
+async function queryDB(dbId, token) {
   const res = await fetch(`https://api.notion.com/v1/databases/${dbId}/query`, {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${NOTION_TOKEN}`,
+      'Authorization': `Bearer ${token}`,
       'Notion-Version': '2022-06-28',
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({ page_size: 100 }),
   })
-  if (!res.ok) throw new Error(`Notion API error: ${res.status}`)
+  if (!res.ok) {
+    const text = await res.text()
+    throw new Error(`Notion ${res.status}: ${text}`)
+  }
   return res.json()
 }
 
@@ -29,21 +31,20 @@ function getDate(props, key) {
   const p = props[key]
   return p?.date?.start || ''
 }
-function getText(props, key) {
-  const p = props[key]
-  if (!p) return ''
-  if (p.type === 'rich_text') return p.rich_text.map(t => t.plain_text).join('')
-  return ''
-}
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300')
 
+  const token = process.env.NOTION_TOKEN
+  if (!token) {
+    return res.status(500).json({ error: 'NOTION_TOKEN not configured' })
+  }
+
   try {
     const [projData, creativeData] = await Promise.all([
-      queryDB(PROJECT_DB),
-      queryDB(CREATIVE_DB),
+      queryDB(PROJECT_DB, token),
+      queryDB(CREATIVE_DB, token),
     ])
 
     const projects = projData.results.map(page => {
@@ -96,6 +97,7 @@ export default async function handler(req, res) {
 
     res.status(200).json({ projects, creatives })
   } catch (err) {
+    console.error('API Error:', err)
     res.status(500).json({ error: err.message })
   }
 }
