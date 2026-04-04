@@ -85,85 +85,11 @@ export default function App() {
   }, [])
 
   return (
-    <div className={styles.wrap}>
-      {/* 헤더 */}
-      <header className={styles.header}>
-        <div>
-          <h1 className={styles.h1}>📊 전체 업무 현황</h1>
-          <p className={styles.sub}>써니제이 전용 · 매일 아침 여기서 시작하세요</p>
-        </div>
-        <span className={styles.dateChip}>{dateStr}</span>
-      </header>
-
-      {/* 숫자 카드 */}
-      <div className={styles.cols3}>
-        <Card title="진행 중 프로젝트">
-          <div className={styles.stat}>8</div>
-          <div className={styles.statSub}>AX 4 · 성당 3 · Creative 1</div>
-        </Card>
-        <Card title="AX 지원 미처리">
-          <div className={styles.stat}>0</div>
-          <div className={styles.statSub}>현재 미처리 문의 없음</div>
-        </Card>
-        <Card title="완료된 프로젝트">
-          <div className={styles.stat}>2</div>
-          <div className={styles.statSub}>사진 아카이브 · AI 전자책</div>
-        </Card>
-      </div>
-
-      {/* 프로젝트 현황 */}
-      <div className={styles.cols2}>
-        <Card title="🚀 AX팀 프로젝트">
-          <ProjectRow href={NOTION.ezInterview} name="EZ Interview AI 모더레이터" badge="🔴 높음" type="red" />
-          <ProjectRow href={NOTION.synth}       name="합성패널"                   badge="🔴 높음" type="red" />
-          <ProjectRow href={NOTION.aiMod}       name="AI 모더레이터 고도화"       badge="🟡 중간" type="yellow" />
-          <ProjectRow href={NOTION.automate}    name="업무자동화"                 badge="🟡 중간" type="yellow" />
-          <a className={styles.moreLink} href={NOTION.projects} target="_blank" rel="noreferrer">
-            전체 프로젝트 DB →
-          </a>
-        </Card>
-
-        <Card title="⛪ 성당 기획팀 · 🎬 AI Creative">
-          <div className={styles.groupLabel}>성당 기획팀</div>
-          <ProjectRow href={NOTION.club}  name="동호회"       badge="진행 중" type="yellow" />
-          <ProjectRow href={NOTION.note}  name="신자노트 제작" badge="진행 중" type="yellow" />
-          <ProjectRow href={NOTION.bible} name="성경 출판"     badge="진행 중" type="yellow" />
-          <div className={styles.groupLabel}>AI Creative</div>
-          <ProjectRow href={NOTION.walk}  name="WALK (산책)"            badge="제작 중" type="purple" />
-          <ProjectRow href={NOTION.mazu}  name="MAZU: THE GREAT WORK"   badge="기획 중" type="blue" />
-        </Card>
-      </div>
-
-      {/* 캘린더 */}
-      <Card title="📅 일정 (Google Calendar)">
-        <iframe
-          className={styles.calFrame}
-          src={CAL_URL}
-          frameBorder="0"
-          scrolling="no"
-          title="Google Calendar"
-        />
-      </Card>
-
-      {/* AX 지원 + 팀 공지 */}
-      <div className={styles.cols2}>
-        <Card title="🙋 AX 지원 현황">
-          <div className={styles.emptyState}>미처리 문의가 없어요</div>
-          <a className={styles.moreLink} href={NOTION.axSupport} target="_blank" rel="noreferrer">
-            AX 지원 DB →
-          </a>
-        </Card>
-        <Card title="📣 팀 공지 · 메모">
-          <div className={styles.noticeRow}>💡 매주 월요일 업데이트</div>
-          <a className={styles.moreLink} href={NOTION.axTeam} target="_blank" rel="noreferrer">
-            AX팀 공용 대시보드 →
-          </a>
-        </Card>
-      </div>
-
-      {/* 빠른 이동 */}
-      <Card title="⚡ 빠른 이동">
-        <div className={styles.quickGrid}>
+    <div className={styles.page}>
+      {/* 왼쪽 사이드바 — 빠른 이동 */}
+      <aside className={styles.sidebar}>
+        <div className={styles.sidebarTitle}>⚡ 빠른 이동</div>
+        <nav className={styles.sidebarNav}>
           <QuickBtn href={NOTION.projects}>🚀 전체 프로젝트</QuickBtn>
           <QuickBtn href={NOTION.axTeam}>📊 AX팀 공용</QuickBtn>
           <QuickBtn href={NOTION.aiAssets}>📚 AI Assets DB</QuickBtn>
@@ -176,8 +102,86 @@ export default function App() {
           <QuickBtn href="https://dashboard.office.hiworks.com/">📧 하이웍스 메일</QuickBtn>
           <QuickBtn href="https://kp.embrain.com/search/loginpage.do">🤖 AI게시판</QuickBtn>
           <QuickBtn href="https://kpad.embrain.com/search/adminProposal.do">🤖 AI게시판(관리)</QuickBtn>
+        </nav>
+      </aside>
+
+      {/* 오른쪽 메인 콘텐츠 */}
+      <div className={styles.main}>
+        {/* 헤더 */}
+        <header className={styles.header}>
+          <div>
+            <h1 className={styles.h1}>📊 전체 업무 현황</h1>
+            <p className={styles.sub}>써니제이 전용 · 매일 아침 여기서 시작하세요</p>
+          </div>
+          <span className={styles.dateChip}>{dateStr}</span>
+        </header>
+
+        {/* 숫자 카드 */}
+        <div className={styles.cols3}>
+          <Card title="진행 중 프로젝트">
+            <div className={styles.stat}>8</div>
+            <div className={styles.statSub}>AX 4 · 성당 3 · Creative 1</div>
+          </Card>
+          <Card title="AX 지원 미처리">
+            <div className={styles.stat}>0</div>
+            <div className={styles.statSub}>현재 미처리 문의 없음</div>
+          </Card>
+          <Card title="완료된 프로젝트">
+            <div className={styles.stat}>2</div>
+            <div className={styles.statSub}>사진 아카이브 · AI 전자책</div>
+          </Card>
         </div>
-      </Card>
+
+        {/* 프로젝트 현황 */}
+        <div className={styles.cols2}>
+          <Card title="🚀 AX팀 프로젝트">
+            <ProjectRow href={NOTION.ezInterview} name="EZ Interview AI 모더레이터" badge="🔴 높음" type="red" />
+            <ProjectRow href={NOTION.synth}       name="합성패널"                   badge="🔴 높음" type="red" />
+            <ProjectRow href={NOTION.aiMod}       name="AI 모더레이터 고도화"       badge="🟡 중간" type="yellow" />
+            <ProjectRow href={NOTION.automate}    name="업무자동화"                 badge="🟡 중간" type="yellow" />
+            <a className={styles.moreLink} href={NOTION.projects} target="_blank" rel="noreferrer">
+              전체 프로젝트 DB →
+            </a>
+          </Card>
+
+          <Card title="⛪ 성당 기획팀 · 🎬 AI Creative">
+            <div className={styles.groupLabel}>성당 기획팀</div>
+            <ProjectRow href={NOTION.club}  name="동호회"       badge="진행 중" type="yellow" />
+            <ProjectRow href={NOTION.note}  name="신자노트 제작" badge="진행 중" type="yellow" />
+            <ProjectRow href={NOTION.bible} name="성경 출판"     badge="진행 중" type="yellow" />
+            <div className={styles.groupLabel}>AI Creative</div>
+            <ProjectRow href={NOTION.walk}  name="WALK (산책)"            badge="제작 중" type="purple" />
+            <ProjectRow href={NOTION.mazu}  name="MAZU: THE GREAT WORK"   badge="기획 중" type="blue" />
+          </Card>
+        </div>
+
+        {/* 캘린더 */}
+        <Card title="📅 일정 (Google Calendar)">
+          <iframe
+            className={styles.calFrame}
+            src={CAL_URL}
+            frameBorder="0"
+            scrolling="no"
+            title="Google Calendar"
+          />
+        </Card>
+
+        {/* AX 지원 + 팀 공지 */}
+        <div className={styles.cols2}>
+          <Card title="🙋 AX 지원 현황">
+            <div className={styles.emptyState}>미처리 문의가 없어요</div>
+            <a className={styles.moreLink} href={NOTION.axSupport} target="_blank" rel="noreferrer">
+              AX 지원 DB →
+            </a>
+          </Card>
+          <Card title="📣 팀 공지 · 메모">
+            <div className={styles.noticeRow}>💡 매주 월요일 업데이트</div>
+            <a className={styles.moreLink} href={NOTION.axTeam} target="_blank" rel="noreferrer">
+              AX팀 공용 대시보드 →
+            </a>
+          </Card>
+        </div>
+      </div>
     </div>
   )
 }
