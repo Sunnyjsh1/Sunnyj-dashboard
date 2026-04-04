@@ -3,7 +3,6 @@ import styles from './App.module.css'
 
 const NOTION = {
   projects:   'https://www.notion.so/d65d7c1584104496aa782401dee7554a',
-  axTeam:     'https://www.notion.so/338d7056d19d81efaa3fe9be70900610',
   aiAssets:   'https://www.notion.so/38212f29c4464fdf9192d11d98eaf51f',
   teamOps:    'https://www.notion.so/338d7056d19d81e6a924e8ddbbdad845',
 
@@ -289,11 +288,6 @@ export default function App() {
           />
         </Card>
 
-        {/* 팀 공지 */}
-        <div className={styles.cols2}>
-          
-          <Card title="📣 팀 공지 · 메모">
-            <div className={styles.noticeRow}>💡 매주 월요일 업데이트</div>
             <a className={styles.moreLink} href={NOTION.axTeam} target="_blank" rel="noreferrer">
               AX팀 공용 대시보드 →
             </a>
