@@ -247,7 +247,7 @@ export default function App() {
         </div>
 
         {/* 숫자 카드 */}
-        <div className={styles.cols3}>
+        <div className={styles.cols2}>
           <Card title="진행 중 프로젝트">
             <div className={styles.stat}>8</div>
             <div className={styles.statSub}>AX 4 · 성당 3 · Creative 1</div>
