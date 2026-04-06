@@ -62,7 +62,7 @@ module.exports = async function handler(req, res) {
       else if (priority === '중간') { type = 'yellow'; badge = '🟡 중간' }
       else if (priority === '낮음') { type = 'green'; badge = '🟢 낮음' }
 
-      const due = getDate(p, '마감일')
+      const due = getDate(p, '날짜')
       return {
         id: page.id,
         name: getTitle(p, '프로젝트명'),
