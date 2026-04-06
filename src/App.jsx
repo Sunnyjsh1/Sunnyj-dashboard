@@ -3,23 +3,11 @@ import styles from './App.module.css'
 
 const NOTION = {
   projects:   'https://www.notion.so/d65d7c1584104496aa782401dee7554a',
-  axTeam:     'https://www.notion.so/338d7056d19d81efaa3fe9be70900610',
-  aiAssets:   'https://www.notion.so/338d7056d19d81da8434c26d1ba4a501',
-  education:  'https://www.notion.so/b29e69c05c6f4a86b8bef53b92a3e106',
-  axSupport:  'https://www.notion.so/77a5b37cefa0454d9fc83996f186351a',
+  aiAssets:   'https://www.notion.so/38212f29c4464fdf9192d11d98eaf51f',
   teamOps:    'https://www.notion.so/338d7056d19d81e6a924e8ddbbdad845',
-  creative:   'https://www.notion.so/4508f688830b4c59ba8177c28b7825f0',
-  church:     'https://www.notion.so/338d7056d19d8164b925c6a069a3c7c8',
-  guide:      'https://www.notion.so/338d7056d19d81eab55deb2b53170aa1',
-  ezInterview:'https://www.notion.so/338d7056d19d81dd886bc228847e097a',
-  synth:      'https://www.notion.so/338d7056d19d81acad2aca71f03ac7f1',
-  aiMod:      'https://www.notion.so/338d7056d19d81e3877fd9da9b4e1c2f',
-  automate:   'https://www.notion.so/338d7056d19d816194ccec41be06efb0',
-  club:       'https://www.notion.so/338d7056d19d812f9b7ff39caf646fbb',
-  note:       'https://www.notion.so/338d7056d19d814e999ff1164953fe8b',
-  bible:      'https://www.notion.so/338d7056d19d81f9be6fd5a9eb716535',
-  walk:       'https://www.notion.so/338d7056d19d8135b28de9b187e32f2b',
-  mazu:       'https://www.notion.so/338d7056d19d81c0a294fe619461c1e4',
+
+  churchPage: 'https://www.notion.so/338d7056d19d818a99dfe3c534530dcc',
+
 }
 
 const CAL_URL =
@@ -97,15 +85,9 @@ function saveAiTools(tools) {
 }
 
 const QUICK_LINKS = [
-  { label: '🚀 전체 프로젝트', href: NOTION.projects },
-  { label: '📊 AX팀 공용', href: NOTION.axTeam },
-  { label: '📚 AI Assets DB', href: NOTION.aiAssets },
-  { label: '🎓 교육·전파', href: NOTION.education },
-  { label: '🙋 AX 지원', href: NOTION.axSupport },
-  { label: '👥 팀 운영', href: NOTION.teamOps },
-  { label: '🎬 AI Creative', href: NOTION.creative },
-  { label: '⛪ 성당 기획팀', href: NOTION.church },
-  { label: '📘 운영가이드', href: NOTION.guide },
+  { label: '🚀 프로젝트', href: NOTION.projects },
+  { label: '📚 Asset', href: NOTION.aiAssets },
+  { label: '👥 Team', href: NOTION.teamOps },
   { label: '📧 하이웍스 메일', href: 'https://dashboard.office.hiworks.com/' },
   { label: '🤖 AI게시판', href: 'https://kp.embrain.com/search/loginpage.do' },
   { label: '🤖 AI게시판(관리)', href: 'https://kpad.embrain.com/search/adminProposal.do' },
@@ -116,9 +98,11 @@ const FALLBACK_PROJECTS = [
   { name: '합성패널', badge: '🔴 높음', type: 'red', href: NOTION.synth, group: 'ax', due: '-' },
   { name: 'AI 모더레이터 고도화', badge: '🟡 중간', type: 'yellow', href: NOTION.aiMod, group: 'ax', due: '-' },
   { name: '업무자동화', badge: '🟡 중간', type: 'yellow', href: NOTION.automate, group: 'ax', due: '-' },
-  { name: '동호회', badge: '진행 중', type: 'yellow', href: NOTION.club, group: 'church', due: '-' },
-  { name: '신자노트 제작', badge: '진행 중', type: 'yellow', href: NOTION.note, group: 'church', due: '-' },
-  { name: '성경 출판', badge: '진행 중', type: 'yellow', href: NOTION.bible, group: 'church', due: '-' },
+  { name: '동호회', badge: '진행 중', type: 'yellow', href: 'https://www.notion.so/338d7056d19d810b86bff026ff96b35f', group: 'church', due: '-' },
+  { name: '신자노트 제작', badge: '진행 중', type: 'yellow', href: 'https://www.notion.so/338d7056d19d814e999ff1164953fe8b', group: 'church', due: '-' },
+  { name: '성경 출판', badge: '진행 중', type: 'yellow', href: 'https://www.notion.so/338d7056d19d81f9be6fd5a9eb716535', group: 'church', due: '-' },
+  { name: '사진자료 아카이브 구축', badge: '진행 중', type: 'yellow', href: 'https://www.notion.so/338d7056d19d81fcaadad8a15375f187', group: 'church', due: '-' },
+  { name: 'WYD (세계청년대회)', badge: '진행 중', type: 'yellow', href: 'https://www.notion.so/338d7056d19d81848126c4e16806f56f', group: 'church', due: '-' },
   { name: 'WALK (산책)', badge: '제작 중', type: 'purple', href: NOTION.walk, group: 'creative', due: '미정' },
   { name: 'MAZU: THE GREAT WORK', badge: '기획 중', type: 'blue', href: NOTION.mazu, group: 'creative', due: '미정' },
 ]
@@ -159,7 +143,7 @@ export default function App() {
     fetch('/api/projects')
       .then(r => r.json())
       .then(data => {
-        const merged = [...(data.projects || []), ...(data.creatives || [])]
+        const merged = [...(data.projects || []), ...(data.churchProjects || [])]
         if (merged.length > 0) setAllProjects(merged)
       })
       .catch(() => {})
@@ -249,15 +233,12 @@ export default function App() {
         </div>
 
         {/* 숫자 카드 */}
-        <div className={styles.cols3}>
+        <div className={styles.cols2}>
           <Card title="진행 중 프로젝트">
-            <div className={styles.stat}>8</div>
-            <div className={styles.statSub}>AX 4 · 성당 3 · Creative 1</div>
+            <div className={styles.stat}>{filteredProjects.length}</div>
+            <div className={styles.statSub}>AX {axProjects.length} · 성당 {churchProjects.length} · Creative {creativeProjects.length}</div>
           </Card>
-          <Card title="AX 지원 미처리">
-            <div className={styles.stat}>0</div>
-            <div className={styles.statSub}>현재 미처리 문의 없음</div>
-          </Card>
+
           <Card title="완료된 프로젝트">
             <div className={styles.stat}>2</div>
             <div className={styles.statSub}>사진 아카이브 · AI 전자책</div>
@@ -268,7 +249,7 @@ export default function App() {
         <div className={styles.cols3}>
           <Card title="🚀 AX팀 프로젝트">
             {axProjects.length > 0 ? axProjects.map(p => (
-              <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} due={p.due} />
+              <ProjectRow key={p.href} href={p.href} name={p.assignee ? p.name + ' (' + p.assignee + ')' : p.name} badge={p.badge} type={p.type} due={p.due} />
             )) : <div className={styles.noResult}>검색 결과 없음</div>}
             <a className={styles.moreLink} href={NOTION.projects} target="_blank" rel="noreferrer">
               전체 프로젝트 DB →
@@ -279,12 +260,20 @@ export default function App() {
             {churchProjects.length > 0 ? churchProjects.map(p => (
               <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} due={p.due} />
             )) : <div className={styles.noResult}>검색 결과 없음</div>}
+          
+            <a className={styles.moreLink} href={NOTION.churchPage} target="_blank" rel="noreferrer">
+              성당기획팀 프로젝트 →
+            </a>
           </Card>
 
           <Card title="🎬 AI Creative">
             {creativeProjects.length > 0 ? creativeProjects.map(p => (
               <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} due={p.due} />
             )) : <div className={styles.noResult}>검색 결과 없음</div>}
+          
+            <a className={styles.moreLink} href={NOTION.projects} target="_blank" rel="noreferrer">
+              전체 프로젝트 DB →
+            </a>
           </Card>
         </div>
 
@@ -298,25 +287,6 @@ export default function App() {
             title="Google Calendar"
           />
         </Card>
-
-        {/* AX 지원 + 팀 공지 */}
-        <div className={styles.cols2}>
-          <Card title="🙋 AX 지원 현황">
-            <div className={styles.emptyState}>미처리 문의가 없어요</div>
-            <a className={styles.moreLink} href={NOTION.axSupport} target="_blank" rel="noreferrer">
-              AX 지원 DB →
-            </a>
-          </Card>
-          <Card title="📣 팀 공지 · 메모">
-            <div className={styles.noticeRow}>💡 매주 월요일 업데이트</div>
-            <a className={styles.moreLink} href={NOTION.axTeam} target="_blank" rel="noreferrer">
-              AX팀 공용 대시보드 →
-            </a>
-            <a className={styles.moreLink} href="https://groups.office.hiworks.com/group/1025337/debates/all/" target="_blank" rel="noreferrer">
-              💬 AX추진팀 그룹채팅 →
-            </a>
-          </Card>
-        </div>
       </div>
     </div>
   )
