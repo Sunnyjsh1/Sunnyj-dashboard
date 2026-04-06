@@ -91,7 +91,6 @@ const QUICK_LINKS = [
   { label: '📧 하이웍스 메일', href: 'https://dashboard.office.hiworks.com/' },
   { label: '🤖 AI게시판', href: 'https://kp.embrain.com/search/loginpage.do' },
   { label: '🤖 AI게시판(관리)', href: 'https://kpad.embrain.com/search/adminProposal.do' },
-  { label: '📋 월별보고', href: 'https://docs.google.com/spreadsheets/d/18A5JqnsKd4j6wCCtrHZEkKl11NYb2xpKRH13PfzgNF4/edit?gid=0#gid=0' },
 ]
 
 const FALLBACK_PROJECTS = [
@@ -262,8 +261,8 @@ export default function App() {
               <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} due={p.due} />
             )) : <div className={styles.noResult}>검색 결과 없음</div>}
           
-            <a className={styles.moreLink} href={NOTION.churchPage} target="_blank" rel="noreferrer">
-              성당기획팀 프로젝트 →
+            <a className={styles.moreLink} href="https://docs.google.com/spreadsheets/d/18A5JqnsKd4j6wCCtrHZEkKl11NYb2xpKRH13PfzgNF4/edit?gid=0#gid=0" target="_blank" rel="noreferrer">
+              📋 월별보고 →
             </a>
           </Card>
 
