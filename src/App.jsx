@@ -91,6 +91,7 @@ const QUICK_LINKS = [
   { label: '📧 하이웍스 메일', href: 'https://dashboard.office.hiworks.com/' },
   { label: '🤖 AI게시판', href: 'https://kp.embrain.com/search/loginpage.do' },
   { label: '🤖 AI게시판(관리)', href: 'https://kpad.embrain.com/search/adminProposal.do' },
+  { label: '📋 월별보고', href: 'https://docs.google.com/spreadsheets/d/18A5JqnsKd4j6wCCtrHZEkKl11NYb2xpKRH13PfzgNF4/edit?gid=0#gid=0' },
 ]
 
 const FALLBACK_PROJECTS = [
