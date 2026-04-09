@@ -433,6 +433,116 @@
   color: var(--text-sub);
 }
 
+/* Memo */
+.memoCard {
+  position: relative;
+}
+.memoInput {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.memoField {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface2, var(--surface));
+  color: var(--text);
+  outline: none;
+  box-sizing: border-box;
+}
+.memoField:focus {
+  border-color: var(--accent);
+}
+.memoField::placeholder {
+  color: var(--text-hint);
+}
+.memoAddBtn {
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.memoAddBtn:hover {
+  opacity: 0.85;
+}
+.memoAddBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.memoList {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+.memoItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 4px;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.1s;
+}
+.memoItem:last-child {
+  border-bottom: none;
+}
+.memoItem:hover {
+  background: rgba(0,0,0,0.02);
+}
+.memoDone .memoText {
+  text-decoration: line-through;
+  color: var(--text-hint);
+}
+.memoCheck {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px;
+  flex-shrink: 0;
+}
+.memoText {
+  flex: 1;
+  font-size: 12px;
+  color: var(--text);
+  min-width: 0;
+}
+.memoDate {
+  font-size: 10px;
+  color: var(--text-hint);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.memoDelete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 11px;
+  color: var(--text-hint);
+  padding: 2px 4px;
+  border-radius: 4px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.memoItem:hover .memoDelete {
+  opacity: 1;
+}
+.memoDelete:hover {
+  color: #B91C1C;
+  background: #FEE2E2;
+}
+
 /* Responsive additions */
 @media (max-width: 720px) {
   .cols4 { grid-template-columns: repeat(2, 1fr); }

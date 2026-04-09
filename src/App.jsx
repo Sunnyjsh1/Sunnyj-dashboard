@@ -91,6 +91,7 @@ const QUICK_LINKS = [
   { label: '📧 하이웍스 메일', href: 'https://dashboard.office.hiworks.com/' },
   { label: '🤖 AI게시판', href: 'https://kp.embrain.com/search/loginpage.do' },
   { label: '🤖 AI게시판(관리)', href: 'https://kpad.embrain.com/search/adminProposal.do' },
+  { label: '📋 프로젝트 보드', href: 'https://project-8jsar.vercel.app/' },
 ]
 
 const FALLBACK_PROJECTS = [
@@ -115,6 +116,9 @@ export default function App() {
   const [editMode, setEditMode] = useState(false)
   const [newLabel, setNewLabel] = useState('')
   const [newHref, setNewHref] = useState('')
+  const [memos, setMemos] = useState([])
+  const [memoText, setMemoText] = useState('')
+  const [memoLoading, setMemoLoading] = useState(false)
 
   function addTool() {
     if (!newLabel.trim() || !newHref.trim()) return
@@ -138,6 +142,55 @@ export default function App() {
     const day = String(d.getDate()).padStart(2, '0')
     setDateStr(`${y}.${m}.${day} (${days[d.getDay()]})`)
   }, [])
+
+  // 메모 로드
+  useEffect(() => {
+    fetch('/api/memos')
+      .then(r => r.json())
+      .then(data => { if (data.memos) setMemos(data.memos) })
+      .catch(() => {})
+  }, [])
+
+  function addMemo() {
+    if (!memoText.trim() || memoLoading) return
+    setMemoLoading(true)
+    fetch('/api/memos', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: memoText.trim() }),
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.memo) setMemos(prev => [data.memo, ...prev])
+        setMemoText('')
+      })
+      .catch(() => {})
+      .finally(() => setMemoLoading(false))
+  }
+
+  function toggleMemo(id, currentDone) {
+    fetch('/api/memos', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, done: !currentDone }),
+    })
+      .then(r => r.json())
+      .then(data => {
+        if (data.memo) setMemos(prev => prev.map(m => m.id === id ? data.memo : m))
+      })
+      .catch(() => {})
+  }
+
+  function deleteMemo(id) {
+    fetch('/api/memos', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id }),
+    })
+      .then(r => r.json())
+      .then(() => setMemos(prev => prev.filter(m => m.id !== id)))
+      .catch(() => {})
+  }
 
   useEffect(() => {
     fetch('/api/projects')
@@ -276,6 +329,37 @@ export default function App() {
             </a>
           </Card>
         </div>
+
+        {/* 메모 */}
+        <Card title="📝 메모" className={styles.memoCard}>
+          <div className={styles.memoInput}>
+            <input
+              className={styles.memoField}
+              type="text"
+              placeholder="메모 입력..."
+              value={memoText}
+              onChange={e => setMemoText(e.target.value)}
+              onKeyDown={e => { if (e.key === 'Enter') addMemo() }}
+              disabled={memoLoading}
+            />
+            <button className={styles.memoAddBtn} onClick={addMemo} disabled={memoLoading}>
+              {memoLoading ? '...' : '추가'}
+            </button>
+          </div>
+          <div className={styles.memoList}>
+            {memos.length === 0 && <div className={styles.noResult}>메모가 없습니다</div>}
+            {memos.map(m => (
+              <div key={m.id} className={`${styles.memoItem} ${m.done ? styles.memoDone : ''}`}>
+                <button className={styles.memoCheck} onClick={() => toggleMemo(m.id, m.done)}>
+                  {m.done ? '✅' : '☐'}
+                </button>
+                <span className={styles.memoText}>{m.text}</span>
+                <span className={styles.memoDate}>{m.date}</span>
+                <button className={styles.memoDelete} onClick={() => deleteMemo(m.id)}>✕</button>
+              </div>
+            ))}
+          </div>
+        </Card>
 
         {/* 캘린더 */}
         <Card title="📅 일정 (Google Calendar)">
