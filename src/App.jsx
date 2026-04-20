@@ -120,6 +120,7 @@ export default function App() {
   const [memoText, setMemoText] = useState('')
   const [memoLoading, setMemoLoading] = useState(false)
   const [weekly, setWeekly] = useState(null)
+  const [alerts, setAlerts] = useState(null)
 
   function addTool() {
     if (!newLabel.trim() || !newHref.trim()) return
@@ -211,6 +212,14 @@ export default function App() {
       .catch(() => {})
   }, [])
 
+  // 📢 상큼이 알림 로드
+  useEffect(() => {
+    fetch('/api/alerts')
+      .then(r => r.json())
+      .then(data => { if (data.alerts) setAlerts(data) })
+      .catch(() => {})
+  }, [])
+
   const q = query.trim().toLowerCase()
   const filteredLinks = q ? QUICK_LINKS.filter(l => l.label.toLowerCase().includes(q)) : QUICK_LINKS
   const filteredProjects = q ? allProjects.filter(p => p.name.toLowerCase().includes(q) || p.badge.includes(q)) : allProjects
@@ -294,6 +303,37 @@ export default function App() {
             <button className={styles.searchClear} onClick={() => setQuery('')}>✕</button>
           )}
         </div>
+
+        {/* 📢 상큼이 알림 (최상단) */}
+        {alerts && alerts.alerts && alerts.alerts.length > 0 && (
+          <Card title={`📢 상큼이 알림 — ${alerts.unreadCount > 0 ? `미확인 ${alerts.unreadCount}개` : '모두 확인'}`}>
+            {alerts.alerts.slice(0, 5).map(a => {
+              const typeColor = {
+                '주간보고': '#DBEAFE',
+                'daily 기록': '#DCFCE7',
+                '법규 체크': '#FEE2E2',
+                '컴플라이언스': '#FED7AA',
+                'D-Day 카운트다운': '#FBCFE8',
+                '기본': '#F1F5F9',
+              }[a.type] || '#F1F5F9'
+              return (
+                <a key={a.id} href={a.url} target="_blank" rel="noreferrer" className={styles.prow}
+                   style={{ display: 'block', padding: '8px', borderLeft: `4px solid ${typeColor}`, marginBottom: 4, textDecoration: 'none', color: 'inherit', opacity: a.status === '완료' ? 0.5 : 1 }}>
+                  <div style={{ fontWeight: a.isToday ? 600 : 400, fontSize: 13 }}>
+                    {a.isToday && '⭐ '}{a.title}
+                    <span style={{ fontSize: 11, color: '#64748b', marginLeft: 8 }}>[{a.type}] {a.date}</span>
+                  </div>
+                  {a.content && <div style={{ fontSize: 12, color: '#475569', marginTop: 2 }}>{a.content}</div>}
+                </a>
+              )
+            })}
+            {alerts.alerts.length > 5 && (
+              <div style={{ fontSize: 11, color: '#64748b', textAlign: 'right', marginTop: 4 }}>
+                {alerts.alerts.length - 5}개 더... (노션에서 전체 확인)
+              </div>
+            )}
+          </Card>
+        )}
 
         {/* 숫자 카드 */}
         <div className={styles.cols2}>
