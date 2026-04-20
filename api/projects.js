@@ -1,7 +1,8 @@
-// Notion API integration
+// Notion API integration - 🎯 AX DB + 🚀 개인 DB 통합
 const DB = {
-  projects: 'd65d7c1584104496aa782401dee7554a',
-  church:   'dd32bae2171d41babf6491259d63b633',
+  axTeam:   '347d7056d19d8172b784dbd0bf1becbd',   // 🎯 AX추진팀 프로젝트 DB (신규, 팀 공유)
+  projects: 'd65d7c1584104496aa782401dee7554a',   // 🚀 프로젝트 DB (개인 - AX개인/성당/Creative)
+  church:   'dd32bae2171d41babf6491259d63b633',   // 성당 세부
   assets:   '38212f29c4464fdf9192d11d98eaf51f',
 }
 
@@ -17,7 +18,7 @@ async function queryDB(dbId, token) {
   })
   if (!res.ok) {
     const text = await res.text()
-    throw new Error(`Notion ${res.status}: ${text}`)
+    throw new Error(`Notion ${res.status} on ${dbId}: ${text}`)
   }
   return res.json()
 }
@@ -32,11 +33,10 @@ function getSelect(props, key) {
 }
 function getText(props, key) {
   const p = props[key]
-  if (!p) return ""
-  if (p.type === "rich_text") return p.rich_text.map(t => t.plain_text).join("")
-  return ""
+  if (!p) return ''
+  if (p.type === 'rich_text') return p.rich_text.map(t => t.plain_text).join('')
+  return ''
 }
-
 function getDate(props, key) {
   return props[key]?.date?.start || ''
 }
@@ -49,18 +49,49 @@ module.exports = async function handler(req, res) {
   if (!token) return res.status(500).json({ error: 'NOTION_TOKEN not configured' })
 
   try {
-    const [projData, churchData] = await Promise.all([
+    const [axTeamData, persData, churchData] = await Promise.all([
+      queryDB(DB.axTeam, token),
       queryDB(DB.projects, token),
       queryDB(DB.church, token),
     ])
 
-    // --- 프로젝트 DB (AX팀 + AI Creative) ---
-    const allProjects = projData.results.map(page => {
+    // --- 🎯 AX팀 프로젝트 DB (팀 공유, 이번주 메인) ---
+    const axTeamProjects = axTeamData.results.map(page => {
+      const p = page.properties
+      const name = getTitle(p, '프로젝트명')
+      const 구분 = getSelect(p, '구분')
+      const 진행상태 = getSelect(p, '진행상태')
+
+      // 구분별 색상
+      let type = 'yellow'
+      if (구분 === '개발') type = 'red'
+      else if (구분 === '운영') type = 'blue'
+      else if (구분 === '지원') type = 'green'
+
+      return {
+        id: page.id,
+        name,
+        assignee: getText(p, '담당자'),
+        badge: `${구분} · ${진행상태}`,
+        type,
+        group: 'ax',
+        source: 'team',
+        href: page.url,
+        due: getText(p, '일정') || '-',
+        status: 진행상태,
+        구분,
+      }
+    }).filter(p => p.name && p.status !== '완료')
+
+    // --- 🚀 개인 프로젝트 DB (개인 성당/Creative, AX카테고리는 개인 관리 용도) ---
+    const personalProjects = persData.results.map(page => {
       const p = page.properties
       const category = getSelect(p, '카테고리')
-      let group = 'ax'
-      if (category === 'AI Creative') group = 'creative'
-      else if (category === '성당기획팀') return null // 성당기획팀 컨테이너는 제외
+      let group = null
+      if (category === 'AX팀') group = 'personal-ax'
+      else if (category === '성당기획팀') return null
+      else if (category === 'AI Creative') group = 'creative'
+      if (!group) return null
 
       const priority = getSelect(p, '우선순위')
       const status = getSelect(p, '상태')
@@ -70,11 +101,14 @@ module.exports = async function handler(req, res) {
       else if (priority === '중간') { type = 'yellow' }
       else if (priority === '낮음') { type = 'green' }
 
-      // AI Creative: 상태별 스타일
       if (group === 'creative') {
         if (status === '제작 중' || status === '진행 중') { type = 'purple'; badge = status }
         else if (status === '기획 중' || status === '아이디어') { type = 'blue'; badge = status }
         else if (status === '완료' || status === '출시') { type = 'green'; badge = status }
+      } else if (group === 'personal-ax') {
+        if (status === '진행 중') type = 'blue'
+        else if (status === '보류') type = 'yellow'
+        else if (status === '아이디어') type = 'purple'
       }
 
       const due = getDate(p, '날짜')
@@ -83,13 +117,12 @@ module.exports = async function handler(req, res) {
         name: getTitle(p, '프로젝트명'),
         assignee: getText(p, '담당자'),
         badge, type, group,
+        source: 'personal',
         href: page.url,
         due: due ? due.replace(/-/g, '.') : '-',
         status,
       }
-    }).filter(p => p && p.name)
-
-    const projects = allProjects.filter(p => p.status !== '완료' && p.status !== '출시')
+    }).filter(p => p && p.name && p.status !== '완료' && p.status !== '출시')
 
     // --- 성당기획팀 세부 프로젝트 DB ---
     const churchProjects = churchData.results.map(page => {
@@ -107,18 +140,18 @@ module.exports = async function handler(req, res) {
       }
     }).filter(c => c.name && c.status !== '완료')
 
-    const axCount = projects.filter(p => p.group === 'ax').length
-    const churchCount = churchProjects.length
-    const creativeCount = projects.filter(p => p.group === 'creative').length
+    // 모든 프로젝트 결합
+    const allProjects = [...axTeamProjects, ...personalProjects]
 
     res.status(200).json({
-      projects,
+      projects: allProjects,
       churchProjects,
       stats: {
-        total: axCount + churchCount + creativeCount,
-        ax: axCount,
-        church: churchCount,
-        creative: creativeCount,
+        total: axTeamProjects.length + personalProjects.length + churchProjects.length,
+        ax: axTeamProjects.length,
+        personalAx: personalProjects.filter(p => p.group === 'personal-ax').length,
+        church: churchProjects.length,
+        creative: personalProjects.filter(p => p.group === 'creative').length,
       },
     })
   } catch (err) {

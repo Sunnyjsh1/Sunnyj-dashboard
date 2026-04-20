@@ -119,6 +119,7 @@ export default function App() {
   const [memos, setMemos] = useState([])
   const [memoText, setMemoText] = useState('')
   const [memoLoading, setMemoLoading] = useState(false)
+  const [weekly, setWeekly] = useState(null)
 
   function addTool() {
     if (!newLabel.trim() || !newHref.trim()) return
@@ -202,10 +203,19 @@ export default function App() {
       .catch(() => {})
   }, [])
 
+  // 이번주 진행사항 로드
+  useEffect(() => {
+    fetch('/api/weekly')
+      .then(r => r.json())
+      .then(data => { if (data.entries) setWeekly(data) })
+      .catch(() => {})
+  }, [])
+
   const q = query.trim().toLowerCase()
   const filteredLinks = q ? QUICK_LINKS.filter(l => l.label.toLowerCase().includes(q)) : QUICK_LINKS
   const filteredProjects = q ? allProjects.filter(p => p.name.toLowerCase().includes(q) || p.badge.includes(q)) : allProjects
   const axProjects = filteredProjects.filter(p => p.group === 'ax')
+  const personalAxProjects = filteredProjects.filter(p => p.group === 'personal-ax')
   const churchProjects = filteredProjects.filter(p => p.group === 'church')
   const creativeProjects = filteredProjects.filter(p => p.group === 'creative')
 
@@ -289,7 +299,7 @@ export default function App() {
         <div className={styles.cols2}>
           <Card title="진행 중 프로젝트">
             <div className={styles.stat}>{filteredProjects.length}</div>
-            <div className={styles.statSub}>AX {axProjects.length} · 성당 {churchProjects.length} · Creative {creativeProjects.length}</div>
+            <div className={styles.statSub}>AX팀 {axProjects.length} · 개인AX {personalAxProjects.length} · 성당 {churchProjects.length} · Creative {creativeProjects.length}</div>
           </Card>
 
           <Card title="완료된 프로젝트">
@@ -298,12 +308,52 @@ export default function App() {
           </Card>
         </div>
 
+        {/* 📅 이번주 진행사항 (신규, 최상단 우선 표시) */}
+        {weekly && weekly.entries && weekly.entries.length > 0 && (
+          <Card title={`📅 이번주 진행사항 — ${weekly.week}`} className={styles.weeklyCard}>
+            {['운영', '지원', '개발'].map(cat => {
+              const items = weekly.byGroup?.[cat] || []
+              if (items.length === 0) return null
+              const catEmoji = { '운영': '🛠', '지원': '🔗', '개발': '🚀' }[cat]
+              return (
+                <div key={cat} style={{ marginTop: 8 }}>
+                  <div style={{ fontWeight: 600, fontSize: 13, color: '#475569', margin: '6px 0' }}>
+                    {catEmoji} {cat} ({items.length})
+                  </div>
+                  {items.map(e => (
+                    <a key={e.id} href={e.projectUrl || e.url} target="_blank" rel="noreferrer"
+                       className={styles.prow} style={{ display: 'block', padding: '6px 8px' }}>
+                      <div style={{ fontWeight: 500 }}>{e.projectName}
+                        {e.담당자 && <span style={{ color: '#64748b', fontWeight: 400, fontSize: 12 }}> · {e.담당자}</span>}
+                      </div>
+                      <div style={{ fontSize: 12, color: '#475569', whiteSpace: 'pre-line', marginTop: 2 }}>
+                        {e.이번주.split('\n').slice(0, 3).join('\n')}
+                        {e.이번주.split('\n').length > 3 && '...'}
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              )
+            })}
+          </Card>
+        )}
+
         {/* 프로젝트 현황 */}
         <div className={styles.cols3}>
-          <Card title="🚀 AX팀 프로젝트">
+          <Card title="🎯 AX팀 프로젝트">
             {axProjects.length > 0 ? axProjects.map(p => (
               <ProjectRow key={p.href} href={p.href} name={p.assignee ? p.name + ' (' + p.assignee + ')' : p.name} badge={p.badge} type={p.type} due={p.due} />
             )) : <div className={styles.noResult}>검색 결과 없음</div>}
+            {personalAxProjects.length > 0 && (
+              <>
+                <div style={{ fontSize: 12, fontWeight: 600, color: '#64748b', margin: '10px 0 4px', borderTop: '1px dashed #cbd5e1', paddingTop: 8 }}>
+                  🛠 개인 관리
+                </div>
+                {personalAxProjects.map(p => (
+                  <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} due={p.due} />
+                ))}
+              </>
+            )}
             <a className={styles.moreLink} href={NOTION.projects} target="_blank" rel="noreferrer">
               전체 프로젝트 DB →
             </a>
