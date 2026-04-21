@@ -309,6 +309,7 @@ export default function App() {
           <Card title={`📢 상큼이 알림 — ${alerts.unreadCount > 0 ? `미확인 ${alerts.unreadCount}개` : '모두 확인'}`}>
             {alerts.alerts.slice(0, 5).map(a => {
               const typeColor = {
+                '주간업무회의록': '#DBEAFE',
                 '주간보고': '#DBEAFE',
                 'daily 기록': '#DCFCE7',
                 '법규 체크': '#FEE2E2',

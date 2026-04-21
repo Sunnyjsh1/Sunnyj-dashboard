@@ -67,9 +67,9 @@ module.exports = async function handler(req, res) {
   // 요일별 알림
   if (weekday === '월') {
     alerts.push({
-      title: '📤 월요일 · 주간보고 발송',
-      content: '지난주 xlsx 확인 후 손팀장에게 발송하세요. 상큼이한테 "주간보고 xlsx"라고 말하면 최신본 생성.',
-      type: '주간보고',
+      title: '📤 월요일 · 주간업무회의록 발송',
+      content: '지난주 xlsx 확인 후 손팀장에게 발송하세요. 상큼이한테 "주간업무회의록 xlsx"라고 말하면 최신본 생성.',
+      type: '주간업무회의록',
     })
   }
   if (weekday === '목') {
@@ -83,7 +83,7 @@ module.exports = async function handler(req, res) {
     alerts.push({
       title: '📋 금요일 · 주간 로그 정리 (17:00)',
       content: '팀원 각자 본인 담당 프로젝트 주간 로그 기입. 상큼이한테 "이번주 주간 로그 정리"라고 말하면 자동 취합.',
-      type: '주간보고',
+      type: '주간업무회의록',
     })
   }
 
