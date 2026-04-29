@@ -3,6 +3,74 @@
 
 const ALERT_DB = '348d7056d19d81d7a6daeb123e39d234'  // 📢 상큼이 알림 DB
 
+// --- Google Calendar ICS 파서 (RFC 5545 최소 구현) ---
+function unfoldIcs(text) {
+  return text.replace(/\r?\n[ \t]/g, '')
+}
+
+// DTSTART → KST 기준 { ymd: 'YYYYMMDD', hm: 'HH:MM' | '종일' }
+function dtstartToKst(dtstart) {
+  const dm = dtstart.match(/^(\d{4})(\d{2})(\d{2})/)
+  if (!dm) return null
+  const [, yy, mm, dd] = dm
+  const tm = dtstart.match(/T(\d{2})(\d{2})/)
+  if (!tm) return { ymd: `${yy}${mm}${dd}`, hm: '종일' }
+  const [, h, mn] = tm
+  if (dtstart.endsWith('Z')) {
+    const utc = Date.UTC(+yy, +mm - 1, +dd, +h, +mn, 0)
+    const kst = new Date(utc + 9 * 60 * 60 * 1000)
+    const ky = kst.getUTCFullYear()
+    const km = String(kst.getUTCMonth() + 1).padStart(2, '0')
+    const kd = String(kst.getUTCDate()).padStart(2, '0')
+    const kh = String(kst.getUTCHours()).padStart(2, '0')
+    const kmn = String(kst.getUTCMinutes()).padStart(2, '0')
+    return { ymd: `${ky}${km}${kd}`, hm: `${kh}:${kmn}` }
+  }
+  return { ymd: `${yy}${mm}${dd}`, hm: `${h}:${mn}` }
+}
+
+function parseIcsToday(icsText, todayYmd) {
+  const lines = unfoldIcs(icsText).split(/\r?\n/)
+  const events = []
+  let cur = null
+  for (const line of lines) {
+    if (line === 'BEGIN:VEVENT') cur = {}
+    else if (line === 'END:VEVENT') {
+      if (cur && cur.dtstart) {
+        const k = dtstartToKst(cur.dtstart)
+        if (k && k.ymd === todayYmd) {
+          cur.kstYmd = k.ymd
+          cur.kstHm = k.hm
+          events.push(cur)
+        }
+      }
+      cur = null
+    } else if (cur) {
+      const idx = line.indexOf(':')
+      if (idx === -1) continue
+      const keyName = line.slice(0, idx).split(';')[0]
+      const value = line.slice(idx + 1)
+      if (keyName === 'SUMMARY') cur.summary = value
+      else if (keyName === 'DTSTART') cur.dtstart = value
+      else if (keyName === 'DTEND') cur.dtend = value
+      else if (keyName === 'LOCATION') cur.location = value
+    }
+  }
+  return events.sort((a, b) => (a.kstHm || '').localeCompare(b.kstHm || ''))
+}
+
+async function fetchTodayEvents(icalUrl, todayYmd) {
+  if (!icalUrl) return []
+  try {
+    const r = await fetch(icalUrl)
+    if (!r.ok) return []
+    const text = await r.text()
+    return parseIcsToday(text, todayYmd)
+  } catch {
+    return []
+  }
+}
+
 async function createAlert(token, alert, dateStr) {
   const body = {
     parent: { database_id: ALERT_DB },
@@ -122,7 +190,28 @@ module.exports = async function handler(req, res) {
     })
   }
 
-  // Daily 기본 알림
+  // Google Calendar 오늘 일정 조회 (업무 + 개인)
+  const todayYmd = `${y}${String(m).padStart(2, '0')}${String(d).padStart(2, '0')}`
+  const [workEvents, personalEvents] = await Promise.all([
+    fetchTodayEvents(process.env.WORK_CALENDAR_ICS_URL, todayYmd),
+    fetchTodayEvents(process.env.PERSONAL_CALENDAR_ICS_URL, todayYmd),
+  ])
+  const calendarEvents = [...workEvents, ...personalEvents]
+    .sort((a, b) => (a.kstHm || '').localeCompare(b.kstHm || ''))
+
+  if (calendarEvents.length > 0) {
+    const lines = calendarEvents.map(e => {
+      const loc = e.location ? ` @ ${e.location}` : ''
+      return `• ${e.kstHm} ${e.summary || '(제목 없음)'}${loc}`
+    }).join('\n')
+    alerts.push({
+      title: `📅 ${dateStr} (${weekday}) 오늘 일정 ${calendarEvents.length}건`,
+      content: lines,
+      type: '캘린더',
+    })
+  }
+
+  // Daily 기본 알림 (요일/D-Day/캘린더 모두 비었을 때만)
   if (alerts.length === 0) {
     alerts.push({
       title: `☕ ${dateStr} (${weekday}) 좋은 아침`,
