@@ -85,6 +85,13 @@ function CheatSheet() {
       </div>
 
       {expanded && (
+        <>
+        <div className={styles.cheatUsage}>
+          💡 <b>사용법</b> — 3가지 트리거 시점에만 펼쳐 보면 충분<br />
+          • <b>매일 새 탭 열 때</b> → 1초 훑기 (자동 인식)<br />
+          • <b>새 업무·요청 받으면</b> → 🔥 킥오프 3질문 + 📨 표준 견적 답신 적용<br />
+          • <b>매주 금 5분</b> → 🛡 워라벨 "안 했어도 됐던 일 1개" 절단
+        </div>
         <div className={styles.cheatGrid}>
           <div className={styles.cheatSection}>
             <div className={styles.cheatHead}>🔥 킥오프 30초 — 3질문</div>
@@ -131,6 +138,7 @@ function CheatSheet() {
             <p className={styles.cheatWarn}>※ 단축 시 spec·테스팅 우선 위험 → 운영 사고 가능성 ↑</p>
           </div>
         </div>
+        </>
       )}
     </div>
   )
