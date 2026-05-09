@@ -588,37 +588,41 @@ export default function App() {
           )}
         </div>
 
-        {/* 📢 상큼이 알림 (최상단) */}
-        {alerts && alerts.alerts && alerts.alerts.length > 0 && (
-          <Card title={`📢 상큼이 알림 — ${alerts.unreadCount > 0 ? `미확인 ${alerts.unreadCount}개` : '모두 확인'}`}>
-            {alerts.alerts.slice(0, 5).map(a => {
-              const typeColor = {
-                '주간업무회의록': '#DBEAFE',
-                '주간보고': '#DBEAFE',
-                'daily 기록': '#DCFCE7',
-                '법규 체크': '#FEE2E2',
-                '컴플라이언스': '#FED7AA',
-                'D-Day 카운트다운': '#FBCFE8',
-                '기본': '#F1F5F9',
-              }[a.type] || '#F1F5F9'
-              return (
-                <a key={a.id} href={a.url} target="_blank" rel="noreferrer" className={styles.prow}
-                   style={{ display: 'block', padding: '8px', borderLeft: `4px solid ${typeColor}`, marginBottom: 4, textDecoration: 'none', color: 'inherit', opacity: a.status === '완료' ? 0.5 : 1 }}>
-                  <div style={{ fontWeight: a.isToday ? 600 : 400, fontSize: 13 }}>
-                    {a.isToday && '⭐ '}{a.title}
-                    <span style={{ fontSize: 11, color: '#64748b', marginLeft: 8 }}>[{a.type}] {a.date}</span>
-                  </div>
-                  {a.content && <div style={{ fontSize: 12, color: '#475569', marginTop: 2 }}>{a.content}</div>}
-                </a>
-              )
-            })}
-            {alerts.alerts.length > 5 && (
-              <div style={{ fontSize: 11, color: '#64748b', textAlign: 'right', marginTop: 4 }}>
-                {alerts.alerts.length - 5}개 더... (노션에서 전체 확인)
-              </div>
-            )}
-          </Card>
-        )}
+        {/* 📢 상큼이 알림 (완료 자동 제외) */}
+        {(() => {
+          const visible = alerts?.alerts?.filter(a => a.status !== '완료') || []
+          if (visible.length === 0) return null
+          return (
+            <Card title={`📢 상큼이 알림 — ${alerts?.unreadCount > 0 ? `미확인 ${alerts.unreadCount}개` : '모두 확인'}`}>
+              {visible.slice(0, 5).map(a => {
+                const typeColor = {
+                  '주간업무회의록': '#DBEAFE',
+                  '주간보고': '#DBEAFE',
+                  'daily 기록': '#DCFCE7',
+                  '법규 체크': '#FEE2E2',
+                  '컴플라이언스': '#FED7AA',
+                  'D-Day 카운트다운': '#FBCFE8',
+                  '기본': '#F1F5F9',
+                }[a.type] || '#F1F5F9'
+                return (
+                  <a key={a.id} href={a.url} target="_blank" rel="noreferrer" className={styles.prow}
+                     style={{ display: 'block', padding: '8px', borderLeft: `4px solid ${typeColor}`, marginBottom: 4, textDecoration: 'none', color: 'inherit' }}>
+                    <div style={{ fontWeight: a.isToday ? 600 : 400, fontSize: 13 }}>
+                      {a.isToday && '⭐ '}{a.title}
+                      <span style={{ fontSize: 11, color: '#64748b', marginLeft: 8 }}>[{a.type}] {a.date}</span>
+                    </div>
+                    {a.content && <div style={{ fontSize: 12, color: '#475569', marginTop: 2 }}>{a.content}</div>}
+                  </a>
+                )
+              })}
+              {visible.length > 5 && (
+                <div style={{ fontSize: 11, color: '#64748b', textAlign: 'right', marginTop: 4 }}>
+                  {visible.length - 5}개 더... (노션에서 전체 확인)
+                </div>
+              )}
+            </Card>
+          )
+        })()}
 
         {/* 🧱 1인자 빌드업 Cheat Sheet (영구 레퍼런스) */}
         <CheatSheet />
@@ -669,44 +673,45 @@ export default function App() {
           </Card>
         )}
 
-        {/* 프로젝트 현황 */}
+        {/* 프로젝트 현황 — 3카드 균형 (AX 본업 / 개인 관리 / Creative+성당) */}
         <div className={styles.cols3}>
           <Card title="🎯 AX팀 프로젝트">
             {axProjects.length > 0 ? axProjects.map(p => (
               <ProjectRow key={p.href} href={p.href} name={p.assignee ? p.name + ' (' + p.assignee + ')' : p.name} badge={p.badge} type={p.type} due={p.due} />
             )) : <div className={styles.noResult}>검색 결과 없음</div>}
-            {personalAxProjects.length > 0 && (
+            <a className={styles.moreLink} href={NOTION.projects} target="_blank" rel="noreferrer">
+              전체 프로젝트 DB →
+            </a>
+          </Card>
+
+          <Card title="🛠 개인 관리">
+            {personalAxProjects.length > 0 ? personalAxProjects.map(p => (
+              <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} due={p.due} />
+            )) : <div className={styles.noResult}>—</div>}
+            <a className={styles.moreLink} href={NOTION.projects} target="_blank" rel="noreferrer">
+              전체 프로젝트 DB →
+            </a>
+          </Card>
+
+          <Card title="🎬 AI Creative · ⛪ 성당">
+            {creativeProjects.length > 0 && creativeProjects.map(p => (
+              <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} due={p.due} />
+            ))}
+            {churchProjects.length > 0 && (
               <>
                 <div style={{ fontSize: 12, fontWeight: 600, color: '#64748b', margin: '10px 0 4px', borderTop: '1px dashed #cbd5e1', paddingTop: 8 }}>
-                  🛠 개인 관리
+                  ⛪ 성당 기획팀
                 </div>
-                {personalAxProjects.map(p => (
+                {churchProjects.map(p => (
                   <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} due={p.due} />
                 ))}
               </>
             )}
-            <a className={styles.moreLink} href={NOTION.projects} target="_blank" rel="noreferrer">
-              전체 프로젝트 DB →
-            </a>
-          </Card>
-
-          <Card title="⛪ 성당 기획팀">
-            {churchProjects.length > 0 ? churchProjects.map(p => (
-              <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} due={p.due} />
-            )) : <div className={styles.noResult}>검색 결과 없음</div>}
-          
+            {creativeProjects.length === 0 && churchProjects.length === 0 && (
+              <div className={styles.noResult}>검색 결과 없음</div>
+            )}
             <a className={styles.moreLink} href="https://docs.google.com/spreadsheets/d/18A5JqnsKd4j6wCCtrHZEkKl11NYb2xpKRH13PfzgNF4/edit?gid=0#gid=0" target="_blank" rel="noreferrer">
-              📋 월별보고 →
-            </a>
-          </Card>
-
-          <Card title="🎬 AI Creative">
-            {creativeProjects.length > 0 ? creativeProjects.map(p => (
-              <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} due={p.due} />
-            )) : <div className={styles.noResult}>검색 결과 없음</div>}
-          
-            <a className={styles.moreLink} href={NOTION.projects} target="_blank" rel="noreferrer">
-              전체 프로젝트 DB →
+              📋 성당 월별보고 →
             </a>
           </Card>
         </div>
