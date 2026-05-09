@@ -61,6 +61,81 @@ function QuickBtn({ href, children }) {
   )
 }
 
+function CheatSheet() {
+  const [expanded, setExpanded] = useState(() => {
+    try {
+      const saved = localStorage.getItem('cheatSheetExpanded')
+      return saved === null ? true : saved === 'true'
+    } catch { return true }
+  })
+
+  function toggle() {
+    const next = !expanded
+    setExpanded(next)
+    try { localStorage.setItem('cheatSheetExpanded', String(next)) } catch {}
+  }
+
+  return (
+    <div className={`${styles.card} ${styles.cheatCard}`}>
+      <div className={styles.cheatHeaderRow}>
+        <div className={styles.cardLabel} style={{ marginBottom: 0 }}>🧱 1인자 빌드업 Cheat Sheet — 매일 시야에</div>
+        <button className={styles.cheatToggle} onClick={toggle}>
+          {expanded ? '접기 ▲' : '펼치기 ▼'}
+        </button>
+      </div>
+
+      {expanded && (
+        <div className={styles.cheatGrid}>
+          <div className={styles.cheatSection}>
+            <div className={styles.cheatHead}>🔥 킥오프 30초 — 3질문</div>
+            <ol>
+              <li>이건 어떤 패턴? (Routing? Chaining? Eval-Opt?)</li>
+              <li>spec 먼저, 프롬프트만?</li>
+              <li>fail case 어떻게 만들지?</li>
+            </ol>
+          </div>
+
+          <div className={styles.cheatSection}>
+            <div className={styles.cheatHead}>🎯 4 Levers</div>
+            <ol>
+              <li><b>Spec-first</b> — 1-page spec 먼저</li>
+              <li><b>분리표</b> — Deterministic / Generative 1장</li>
+              <li><b>Adversarial 셀프 QA</b> — fail case 10개 통과</li>
+              <li><b>Git/JIRA 리터러시</b> — PR 리뷰·git pull만</li>
+            </ol>
+          </div>
+
+          <div className={styles.cheatSection}>
+            <div className={styles.cheatHead}>🛡 워라벨 절단 루틴</div>
+            <p className={styles.cheatBody}>매주 금 5분 — "안 했어도 됐던 일 1개" 절단. 1년 50개.</p>
+          </div>
+
+          <div className={`${styles.cheatSection} ${styles.cheatWide}`}>
+            <div className={styles.cheatHead}>🧱 Anthropic 6+1 패턴</div>
+            <ul className={styles.cheatPatterns}>
+              <li><b>Augmented LLM</b> — 단일 LLM + 검색·도구·메모리</li>
+              <li><b>Prompt Chaining</b> — 단계 분해, 순차 처리</li>
+              <li><b>Routing</b> — 입력 분류 후 분기</li>
+              <li><b>Parallelization</b> — 동시 실행 (분할/투표)</li>
+              <li><b>Orchestrator-Workers</b> — 중앙 LLM이 동적 분해·위임 <span className={styles.cheatNote}>= VS panel</span></li>
+              <li><b>Evaluator-Optimizer</b> — 생성↔평가 순환 <span className={styles.cheatNote}>= CQI V6 후보</span></li>
+              <li>+ <b>Tool Design</b> — 함수 호출 + 구조화 출력</li>
+            </ul>
+          </div>
+
+          <div className={`${styles.cheatSection} ${styles.cheatWide}`}>
+            <div className={styles.cheatHead}>📨 표준 견적 답신 (요청 받자마자)</div>
+            <p className={styles.cheatBody}>
+              <b>적합도 진단 1주</b> + 데이터 확보 X주 + spec 정의 X주 + POC X주 + 테스팅 X주 + Pilot X주
+            </p>
+            <p className={styles.cheatWarn}>※ 단축 시 spec·테스팅 우선 위험 → 운영 사고 가능성 ↑</p>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 const DEFAULT_AI_TOOLS = [
   { label: '✦ Gemini', href: 'https://gemini.google.com/' },
   { label: '✸ Claude', href: 'https://claude.ai/' },
@@ -335,6 +410,9 @@ export default function App() {
             )}
           </Card>
         )}
+
+        {/* 🧱 1인자 빌드업 Cheat Sheet (영구 레퍼런스) */}
+        <CheatSheet />
 
         {/* 숫자 카드 */}
         <div className={styles.cols2}>
