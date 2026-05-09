@@ -144,6 +144,207 @@ function CheatSheet() {
   )
 }
 
+const STUDY_PROGRAM = [
+  {
+    id: 'w1-2',
+    phase: 'W1-2',
+    title: 'Anthropic 6+1 패턴',
+    desc: 'Augmented LLM · Chaining · Routing · Parallelization · Orchestrator-Workers · Evaluator-Optimizer + Tool Design',
+    tasks: [
+      'Anthropic *Building Effective Agents* 정독',
+      '6+1 × 5 프로젝트 매핑표 1장 (본인 손으로)',
+      '🟢🟡⚪ 3색 분류 (적용/1년내/미적용)',
+      '노션 회고 → 6월 sprint 1·2편 재료',
+    ],
+  },
+  {
+    id: 'w3-4',
+    phase: 'W3-4',
+    title: '데이터 흐름도',
+    desc: 'CQI / EZ V2 / VS panel — input → 처리단계 → output',
+    tasks: [
+      'CQI 데이터 흐름도 (Mermaid or PPT)',
+      'EZ V2 데이터 흐름도',
+      'VS panel 데이터 흐름도',
+      '노션 회고 → 6월 sprint 3편 재료',
+    ],
+  },
+  {
+    id: 'w5-6',
+    phase: 'W5-6',
+    title: 'Failure Mode 카탈로그',
+    desc: '할루시네이션 · edge case · 노이즈 · 권한 · latency',
+    tasks: [
+      'Failure mode 5종 카탈로그',
+      'spec 템플릿 체크리스트화',
+      'V5 프롬프트 1개 자가 점검',
+      '노션 회고 → 6월 sprint 4편 재료',
+    ],
+  },
+  {
+    id: 'w7-8',
+    phase: 'W7-8',
+    title: 'Prompt Engineering 깊이',
+    desc: 'few-shot · CoT · JSON 출력 · system message · eval',
+    tasks: [
+      'Prompt 5기법 정독',
+      'V5 프롬프트 재검토',
+      '개선 1건 적용',
+      '노션 회고 → 6월 sprint 5편 재료',
+    ],
+  },
+  {
+    id: 'w9-10',
+    phase: 'W9-10',
+    title: '개발 협업 어휘',
+    desc: 'repo · branch · PR · issue · deploy · staging · prod · log',
+    tasks: [
+      '용어 10개 한 줄씩 정의',
+      'git pull 1회 실습',
+      'PR 리뷰 1회',
+      '노션 회고 → 6월 sprint 6·7편 재료',
+    ],
+  },
+  {
+    id: 'w11-12',
+    phase: 'W11-12',
+    title: 'MLOps 기본',
+    desc: 'training · eval · deployment · monitoring 사이클',
+    tasks: [
+      'MLOps 사이클 정독',
+      'AX 협업 SOP 게이트 기준 반영',
+      'AX팀 표준 1장',
+      '노션 회고 → 6월 sprint 8편 재료',
+    ],
+  },
+]
+
+function StudyProgram() {
+  const [expanded, setExpanded] = useState(() => {
+    try { const s = localStorage.getItem('studyProgramExpanded'); return s === null ? true : s === 'true' } catch { return true }
+  })
+  const [checks, setChecks] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('studyChecks') || '{}') } catch { return {} }
+  })
+  const [notionUrls, setNotionUrls] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('studyNotionUrls') || '{}') } catch { return {} }
+  })
+  const [masterUrl, setMasterUrl] = useState(() => {
+    try { return localStorage.getItem('studyMasterNotion') || '' } catch { return '' }
+  })
+  const [editingUrls, setEditingUrls] = useState(false)
+
+  function toggleExpand() {
+    const next = !expanded
+    setExpanded(next)
+    try { localStorage.setItem('studyProgramExpanded', String(next)) } catch {}
+  }
+  function toggleCheck(key) {
+    const next = { ...checks, [key]: !checks[key] }
+    setChecks(next)
+    try { localStorage.setItem('studyChecks', JSON.stringify(next)) } catch {}
+  }
+  function updateNotionUrl(id, url) {
+    const next = { ...notionUrls, [id]: url }
+    setNotionUrls(next)
+    try { localStorage.setItem('studyNotionUrls', JSON.stringify(next)) } catch {}
+  }
+  function updateMasterUrl(url) {
+    setMasterUrl(url)
+    try { localStorage.setItem('studyMasterNotion', url) } catch {}
+  }
+
+  const totalTasks = STUDY_PROGRAM.reduce((acc, p) => acc + p.tasks.length, 0)
+  const doneTasks = STUDY_PROGRAM.reduce((acc, p) => acc + p.tasks.filter((_, i) => checks[`${p.id}:${i}`]).length, 0)
+  const progress = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0
+
+  return (
+    <div className={`${styles.card} ${styles.studyCard}`}>
+      <div className={styles.studyHeaderRow}>
+        <div className={styles.studyTitleBlock}>
+          <div className={styles.cardLabel} style={{ marginBottom: 2 }}>🎓 1인자 빌드업 12주 프로그램</div>
+          <div className={styles.studySubtitle}>5월 학습 산출 = 6월 사내 강의 sprint 콘텐츠 · 2타 쌍피</div>
+        </div>
+        <div className={styles.studyHeaderRight}>
+          {masterUrl && (
+            <a href={masterUrl} target="_blank" rel="noreferrer" className={styles.studyMasterBtn}>📝 노션 메인</a>
+          )}
+          <button className={styles.cheatToggle} onClick={() => setEditingUrls(!editingUrls)}>
+            {editingUrls ? '완료' : 'URL 편집'}
+          </button>
+          <button className={styles.cheatToggle} onClick={toggleExpand}>
+            {expanded ? '접기 ▲' : '펼치기 ▼'}
+          </button>
+        </div>
+      </div>
+
+      {expanded && (
+        <>
+          <div className={styles.studyProgressRow}>
+            <div className={styles.studyProgressBar}>
+              <div className={styles.studyProgressFill} style={{ width: `${progress}%` }}></div>
+            </div>
+            <span className={styles.studyProgressText}>{doneTasks} / {totalTasks} ({progress}%)</span>
+          </div>
+
+          {editingUrls && (
+            <input
+              className={styles.studyMasterUrlInput}
+              type="text"
+              placeholder="📝 노션 메인 페이지 URL (예: https://www.notion.so/...)"
+              value={masterUrl}
+              onChange={e => updateMasterUrl(e.target.value)}
+            />
+          )}
+
+          <div className={styles.studyPhases}>
+            {STUDY_PROGRAM.map(phase => (
+              <div key={phase.id} className={styles.studyPhase}>
+                <div className={styles.studyPhaseHeader}>
+                  <span className={styles.studyPhaseLabel}>{phase.phase}</span>
+                  <span className={styles.studyPhaseTitle}>{phase.title}</span>
+                  {notionUrls[phase.id] && (
+                    <a href={notionUrls[phase.id]} target="_blank" rel="noreferrer" className={styles.studyPhaseLink} title="노션 페이지">📝</a>
+                  )}
+                </div>
+                <div className={styles.studyPhaseDesc}>{phase.desc}</div>
+                {editingUrls && (
+                  <input
+                    className={styles.studyPhaseUrlInput}
+                    type="text"
+                    placeholder={`${phase.phase} 노션 페이지 URL`}
+                    value={notionUrls[phase.id] || ''}
+                    onChange={e => updateNotionUrl(phase.id, e.target.value)}
+                  />
+                )}
+                <ul className={styles.studyTasks}>
+                  {phase.tasks.map((task, i) => {
+                    const key = `${phase.id}:${i}`
+                    const done = !!checks[key]
+                    return (
+                      <li key={key}>
+                        <label className={styles.studyTaskLabel}>
+                          <input
+                            type="checkbox"
+                            checked={done}
+                            onChange={() => toggleCheck(key)}
+                            className={styles.studyTaskCheck}
+                          />
+                          <span className={done ? styles.studyTaskDone : styles.studyTaskText}>{task}</span>
+                        </label>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  )
+}
+
 const DEFAULT_AI_TOOLS = [
   { label: '✦ Gemini', href: 'https://gemini.google.com/' },
   { label: '✸ Claude', href: 'https://claude.ai/' },
@@ -421,6 +622,9 @@ export default function App() {
 
         {/* 🧱 1인자 빌드업 Cheat Sheet (영구 레퍼런스) */}
         <CheatSheet />
+
+        {/* 🎓 12주 학습 프로그램 */}
+        <StudyProgram />
 
         {/* 숫자 카드 */}
         <div className={styles.cols2}>
