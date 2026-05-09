@@ -829,3 +829,38 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Calendar Card (오늘 일정, 접기 가능) */
+.calendarCard {
+  border-left: 3px solid var(--purple);
+}
+.calendarHeaderRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  gap: 12px;
+}
+.calendarBody {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.calendarItemBlock {
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+}
+.calendarItemTitle {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+.calendarLine {
+  font-size: 12px;
+  color: var(--text-sub);
+  line-height: 1.7;
+  padding: 1px 0;
+}

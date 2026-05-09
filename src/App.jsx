@@ -345,6 +345,49 @@ function StudyProgram() {
   )
 }
 
+function CalendarCard({ items }) {
+  const [expanded, setExpanded] = useState(() => {
+    try { const s = localStorage.getItem('calendarExpanded'); return s === null ? true : s === 'true' } catch { return true }
+  })
+  function toggle() {
+    const next = !expanded
+    setExpanded(next)
+    try { localStorage.setItem('calendarExpanded', String(next)) } catch {}
+  }
+  const totalCount = items.reduce((sum, item) => {
+    const m = (item.title || '').match(/(\d+)건/)
+    return sum + (m ? parseInt(m[1]) : 0)
+  }, 0)
+
+  return (
+    <div className={`${styles.card} ${styles.calendarCard}`}>
+      <div className={styles.calendarHeaderRow}>
+        <div className={styles.cardLabel} style={{ marginBottom: 0 }}>
+          📅 오늘 캘린더 일정 {totalCount > 0 ? `(${totalCount}건)` : ''}
+        </div>
+        <button className={styles.cheatToggle} onClick={toggle}>
+          {expanded ? '접기 ▲' : '펼치기 ▼'}
+        </button>
+      </div>
+      {expanded && (
+        <div className={styles.calendarBody}>
+          {items.map(item => {
+            const lines = (item.content || '').split('\n').filter(l => l.trim())
+            return (
+              <div key={item.id} className={styles.calendarItemBlock}>
+                <div className={styles.calendarItemTitle}>{item.title}</div>
+                {lines.map((line, i) => (
+                  <div key={i} className={styles.calendarLine}>{line}</div>
+                ))}
+              </div>
+            )
+          })}
+        </div>
+      )}
+    </div>
+  )
+}
+
 const DEFAULT_AI_TOOLS = [
   { label: '✦ Gemini', href: 'https://gemini.google.com/' },
   { label: '✸ Claude', href: 'https://claude.ai/' },
@@ -403,7 +446,6 @@ export default function App() {
   const [memos, setMemos] = useState([])
   const [memoText, setMemoText] = useState('')
   const [memoLoading, setMemoLoading] = useState(false)
-  const [weekly, setWeekly] = useState(null)
   const [alerts, setAlerts] = useState(null)
 
   function addTool() {
@@ -485,14 +527,6 @@ export default function App() {
         const merged = [...(data.projects || []), ...(data.churchProjects || [])]
         if (merged.length > 0) setAllProjects(merged)
       })
-      .catch(() => {})
-  }, [])
-
-  // 이번주 진행사항 로드
-  useEffect(() => {
-    fetch('/api/weekly')
-      .then(r => r.json())
-      .then(data => { if (data.entries) setWeekly(data) })
       .catch(() => {})
   }, [])
 
@@ -588,9 +622,9 @@ export default function App() {
           )}
         </div>
 
-        {/* 📢 상큼이 알림 (완료 자동 제외) */}
+        {/* 📢 상큼이 알림 (완료·캘린더 자동 제외 — 캘린더는 별도 카드) */}
         {(() => {
-          const visible = alerts?.alerts?.filter(a => a.status !== '완료') || []
+          const visible = alerts?.alerts?.filter(a => a.status !== '완료' && a.type !== '캘린더') || []
           if (visible.length === 0) return null
           return (
             <Card title={`📢 상큼이 알림 — ${alerts?.unreadCount > 0 ? `미확인 ${alerts.unreadCount}개` : '모두 확인'}`}>
@@ -624,6 +658,13 @@ export default function App() {
           )
         })()}
 
+        {/* 📅 오늘 캘린더 일정 (접기 가능) */}
+        {(() => {
+          const calItems = alerts?.alerts?.filter(a => a.type === '캘린더' && a.status !== '완료') || []
+          if (calItems.length === 0) return null
+          return <CalendarCard items={calItems} />
+        })()}
+
         {/* 🧱 1인자 빌드업 Cheat Sheet (영구 레퍼런스) */}
         <CheatSheet />
 
@@ -643,35 +684,7 @@ export default function App() {
           </Card>
         </div>
 
-        {/* 📅 이번주 진행사항 (신규, 최상단 우선 표시) */}
-        {weekly && weekly.entries && weekly.entries.length > 0 && (
-          <Card title={`📅 이번주 진행사항 — ${weekly.week}`} className={styles.weeklyCard}>
-            {['운영', '지원', '개발'].map(cat => {
-              const items = weekly.byGroup?.[cat] || []
-              if (items.length === 0) return null
-              const catEmoji = { '운영': '🛠', '지원': '🔗', '개발': '🚀' }[cat]
-              return (
-                <div key={cat} style={{ marginTop: 8 }}>
-                  <div style={{ fontWeight: 600, fontSize: 13, color: '#475569', margin: '6px 0' }}>
-                    {catEmoji} {cat} ({items.length})
-                  </div>
-                  {items.map(e => (
-                    <a key={e.id} href={e.projectUrl || e.url} target="_blank" rel="noreferrer"
-                       className={styles.prow} style={{ display: 'block', padding: '6px 8px' }}>
-                      <div style={{ fontWeight: 500 }}>{e.projectName}
-                        {e.담당자 && <span style={{ color: '#64748b', fontWeight: 400, fontSize: 12 }}> · {e.담당자}</span>}
-                      </div>
-                      <div style={{ fontSize: 12, color: '#475569', whiteSpace: 'pre-line', marginTop: 2 }}>
-                        {e.이번주.split('\n').slice(0, 3).join('\n')}
-                        {e.이번주.split('\n').length > 3 && '...'}
-                      </div>
-                    </a>
-                  ))}
-                </div>
-              )
-            })}
-          </Card>
-        )}
+        {/* 노션 주간업무로그 폐기 (2026-05-09) — JIRA 전환 예정 */}
 
         {/* 프로젝트 현황 — 3카드 균형 (AX 본업 / 개인 관리 / Creative+성당) */}
         <div className={styles.cols3}>
