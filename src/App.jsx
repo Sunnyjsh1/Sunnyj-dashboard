@@ -61,160 +61,89 @@ function QuickBtn({ href, children }) {
   )
 }
 
-function CheatSheet() {
-  const [expanded, setExpanded] = useState(() => {
-    try {
-      const saved = localStorage.getItem('cheatSheetExpanded')
-      return saved === null ? true : saved === 'true'
-    } catch { return true }
-  })
-
-  function toggle() {
-    const next = !expanded
-    setExpanded(next)
-    try { localStorage.setItem('cheatSheetExpanded', String(next)) } catch {}
-  }
-
-  return (
-    <div className={`${styles.card} ${styles.cheatCard}`}>
-      <div className={styles.cheatHeaderRow}>
-        <div className={styles.cardLabel} style={{ marginBottom: 0 }}>🧱 1인자 빌드업 Cheat Sheet — 매일 시야에</div>
-        <button className={styles.cheatToggle} onClick={toggle}>
-          {expanded ? '접기 ▲' : '펼치기 ▼'}
-        </button>
-      </div>
-
-      {expanded && (
-        <>
-        <div className={styles.cheatUsage}>
-          💡 <b>사용법</b> — 3가지 트리거 시점에만 펼쳐 보면 충분<br />
-          • <b>매일 새 탭 열 때</b> → 1초 훑기 (자동 인식)<br />
-          • <b>새 업무·요청 받으면</b> → 🔥 킥오프 3질문 + 📨 표준 견적 답신 적용<br />
-          • <b>매주 금 5분</b> → 🛡 워라벨 "안 했어도 됐던 일 1개" 절단
-        </div>
-        <div className={styles.cheatGrid}>
-          <div className={styles.cheatSection}>
-            <div className={styles.cheatHead}>🔥 킥오프 30초 — 3질문</div>
-            <ol>
-              <li>이건 어떤 패턴? (Routing? Chaining? Eval-Opt?)</li>
-              <li>spec 먼저, 프롬프트만?</li>
-              <li>fail case 어떻게 만들지?</li>
-            </ol>
-          </div>
-
-          <div className={styles.cheatSection}>
-            <div className={styles.cheatHead}>🎯 4 Levers</div>
-            <ol>
-              <li><b>Spec-first</b> — 1-page spec 먼저</li>
-              <li><b>분리표</b> — Deterministic / Generative 1장</li>
-              <li><b>Adversarial 셀프 QA</b> — fail case 10개 통과</li>
-              <li><b>Git/JIRA 리터러시</b> — PR 리뷰·git pull만</li>
-            </ol>
-          </div>
-
-          <div className={styles.cheatSection}>
-            <div className={styles.cheatHead}>🛡 워라벨 절단 루틴</div>
-            <p className={styles.cheatBody}>매주 금 5분 — "안 했어도 됐던 일 1개" 절단. 1년 50개.</p>
-          </div>
-
-          <div className={`${styles.cheatSection} ${styles.cheatWide}`}>
-            <div className={styles.cheatHead}>🧱 Anthropic 6+1 패턴</div>
-            <ul className={styles.cheatPatterns}>
-              <li><b>Augmented LLM</b> — 단일 LLM + 검색·도구·메모리</li>
-              <li><b>Prompt Chaining</b> — 단계 분해, 순차 처리</li>
-              <li><b>Routing</b> — 입력 분류 후 분기</li>
-              <li><b>Parallelization</b> — 동시 실행 (분할/투표)</li>
-              <li><b>Orchestrator-Workers</b> — 중앙 LLM이 동적 분해·위임 <span className={styles.cheatNote}>= VS panel</span></li>
-              <li><b>Evaluator-Optimizer</b> — 생성↔평가 순환 <span className={styles.cheatNote}>= CQI V6 후보</span></li>
-              <li>+ <b>Tool Design</b> — 함수 호출 + 구조화 출력</li>
-            </ul>
-          </div>
-
-          <div className={`${styles.cheatSection} ${styles.cheatWide}`}>
-            <div className={styles.cheatHead}>📨 표준 견적 답신 (요청 받자마자)</div>
-            <p className={styles.cheatBody}>
-              <b>적합도 진단 1주</b> + 데이터 확보 X주 + spec 정의 X주 + POC X주 + 테스팅 X주 + Pilot X주
-            </p>
-            <p className={styles.cheatWarn}>※ 단축 시 spec·테스팅 우선 위험 → 운영 사고 가능성 ↑</p>
-          </div>
-        </div>
-        </>
-      )}
-    </div>
-  )
-}
 
 const STUDY_PROGRAM = [
   {
-    id: 'w1-2',
-    phase: 'W1-2',
-    title: 'Anthropic 6+1 패턴',
-    desc: 'Augmented LLM · Chaining · Routing · Parallelization · Orchestrator-Workers · Evaluator-Optimizer + Tool Design',
+    id: 'w1',
+    phase: 'W1',
+    title: '매트릭스 정련',
+    desc: '5/23~5/29 · 4트랙 자가진단 + T3 L단계 확정',
     tasks: [
-      'Anthropic *Building Effective Agents* 정독',
-      '6+1 × 5 프로젝트 매핑표 1장 (본인 손으로)',
-      '🟢🟡⚪ 3색 분류 (적용/1년내/미적용)',
-      '노션 회고 → 6월 sprint 1·2편 재료',
+      '매트릭스 T3 진단 완료',
+      'RAG 기초 1편',
+      '백로그 시드 1개',
+      '금: W1 회고',
     ],
   },
   {
-    id: 'w3-4',
-    phase: 'W3-4',
-    title: '데이터 흐름도',
-    desc: 'CQI / EZ V2 / VS panel — input → 처리단계 → output',
+    id: 'w2',
+    phase: 'W2 ★',
+    title: 'LLM 평가 메트릭',
+    desc: '5/30~6/5 · 현재 진행 중',
     tasks: [
-      'CQI 데이터 흐름도 (Mermaid or PPT)',
-      'EZ V2 데이터 흐름도',
-      'VS panel 데이터 흐름도',
-      '노션 회고 → 6월 sprint 3편 재료',
+      'T3 월·수: LLM 평가 메트릭 (Hallucination·LLM-as-judge)',
+      'T3: 매트릭스 갱신',
+      'T4 화·목: 백로그 1순위 착수',
+      '금: W2 회고',
     ],
   },
   {
-    id: 'w5-6',
-    phase: 'W5-6',
-    title: 'Failure Mode 카탈로그',
-    desc: '할루시네이션 · edge case · 노이즈 · 권한 · latency',
+    id: 'w3',
+    phase: 'W3',
+    title: 'VS·CQI 매핑 + 에이전트 패턴',
+    desc: '6/6~6/12 · 구 12주 W1-2·W3-4 통합',
     tasks: [
-      'Failure mode 5종 카탈로그',
-      'spec 템플릿 체크리스트화',
-      'V5 프롬프트 1개 자가 점검',
-      '노션 회고 → 6월 sprint 4편 재료',
+      'T3 월: VS·CQI 평가체계 매핑',
+      'T3 수: Anthropic 에이전트 패턴 정독',
+      'T4 화·목: 백로그 중반',
+      '금: W3 회고',
     ],
   },
   {
-    id: 'w7-8',
-    phase: 'W7-8',
-    title: 'Prompt Engineering 깊이',
-    desc: 'few-shot · CoT · JSON 출력 · system message · eval',
+    id: 'w4',
+    phase: 'W4',
+    title: 'Failure Mode + 중간점검',
+    desc: '6/13~6/19 · 구 12주 W5-6 통합',
     tasks: [
-      'Prompt 5기법 정독',
-      'V5 프롬프트 재검토',
-      '개선 1건 적용',
-      '노션 회고 → 6월 sprint 5편 재료',
+      'T3 월: Failure Mode 카탈로그',
+      'T3 수: L단계 중간 검증',
+      'T4 화·목: 백로그 완주',
+      '금: 중간 회고',
     ],
   },
   {
-    id: 'w9-10',
-    phase: 'W9-10',
-    title: '개발 협업 어휘',
-    desc: 'repo · branch · PR · issue · deploy · staging · prod · log',
+    id: 'w5',
+    phase: 'W5',
+    title: 'PE 자산화 + 직접 실험',
+    desc: '6/20~6/26 · 구 12주 W7-8 통합',
     tasks: [
-      '용어 10개 한 줄씩 정의',
-      'git pull 1회 실습',
-      'PR 리뷰 1회',
-      '노션 회고 → 6월 sprint 6·7편 재료',
+      'T3 월: Prompt Engineering 자산화',
+      'T3 수: 직접 실험 (RAG 또는 평가 셋업)',
+      'T4 화·목: 백로그 2개째',
+      '금: W5 회고',
     ],
   },
   {
-    id: 'w11-12',
-    phase: 'W11-12',
+    id: 'w6',
+    phase: 'W6',
+    title: '산출물 통합',
+    desc: '6/27~7/3 · 구 12주 W9-10 통합',
+    tasks: [
+      'T3 월: 개발 협업 어휘 실습',
+      'T3 수: 산출물 통합 (뉴스레터·사내교육)',
+      'T4 화·목: portfolio 정리',
+      '금: 최종 회고 + 7월 방향 결정',
+    ],
+  },
+  {
+    id: 'w7plus',
+    phase: '7월~',
     title: 'MLOps 기본',
-    desc: 'training · eval · deployment · monitoring 사이클',
+    desc: '7/4~ · 구 12주 W11-12 통합',
     tasks: [
       'MLOps 사이클 정독',
-      'AX 협업 SOP 게이트 기준 반영',
+      'AX 협업 SOP 반영',
       'AX팀 표준 1장',
-      '노션 회고 → 6월 sprint 8편 재료',
     ],
   },
 ]
@@ -262,8 +191,8 @@ function StudyProgram() {
     <div className={`${styles.card} ${styles.studyCard}`}>
       <div className={styles.studyHeaderRow}>
         <div className={styles.studyTitleBlock}>
-          <div className={styles.cardLabel} style={{ marginBottom: 2 }}>🎓 1인자 빌드업 12주 프로그램</div>
-          <div className={styles.studySubtitle}>5월 학습 산출 = 6월 사내 강의 sprint 콘텐츠 · 2타 쌍피</div>
+          <div className={styles.cardLabel} style={{ marginBottom: 2 }}>📚 Mastery 6주 커리큘럼</div>
+          <div className={styles.studySubtitle}>T3(AX기술) + T4(개발백로그) · 2h/일 평일 · ~7/3</div>
         </div>
         <div className={styles.studyHeaderRight}>
           {masterUrl && (
@@ -384,6 +313,54 @@ function CalendarCard({ items }) {
           })}
         </div>
       )}
+    </div>
+  )
+}
+
+const FOCUS_FOUR = [
+  { name: 'Virtual Sapiens', status: 'Sprint 1', type: 'red', href: 'https://www.notion.so/d65d7c1584104496aa782401dee7554a' },
+  { name: 'EZ Interview V2', status: 'AI 모더레이터 고도화', type: 'red', href: 'https://www.notion.so/d65d7c1584104496aa782401dee7554a' },
+  { name: 'CQI V5', status: 'V5 본평가 준비', type: 'yellow', href: 'https://www.notion.so/d65d7c1584104496aa782401dee7554a' },
+  { name: 'AI 뉴스레터', status: '정기 발행', type: 'green', href: 'https://www.notion.so/d65d7c1584104496aa782401dee7554a' },
+]
+
+function FocusFour() {
+  return (
+    <Card title="🎯 4대 집중">
+      <div className={styles.focusGrid}>
+        {FOCUS_FOUR.map(p => (
+          <a key={p.name} className={styles.focusItem} href={p.href} target="_blank" rel="noreferrer">
+            <span className={styles.focusName}>{p.name}</span>
+            <Badge type={p.type}>{p.status}</Badge>
+          </a>
+        ))}
+      </div>
+    </Card>
+  )
+}
+
+function TodayFocus() {
+  const [focus, setFocus] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('todayFocus') || '{}')
+      const today = new Date().toDateString()
+      return saved.date === today ? saved.text : ''
+    } catch { return '' }
+  })
+  function save(text) {
+    setFocus(text)
+    try { localStorage.setItem('todayFocus', JSON.stringify({ text, date: new Date().toDateString() })) } catch {}
+  }
+  return (
+    <div className={styles.focusBar}>
+      <span className={styles.focusBarLabel}>⚡ 오늘의 포커스</span>
+      <input
+        className={styles.focusBarInput}
+        type="text"
+        placeholder="오늘 가장 중요한 한 가지..."
+        value={focus}
+        onChange={e => save(e.target.value)}
+      />
     </div>
   )
 }
@@ -622,6 +599,8 @@ export default function App() {
           )}
         </div>
 
+        <TodayFocus />
+
         {/* 📢 상큼이 알림 (완료·캘린더 자동 제외 — 캘린더는 별도 카드) */}
         {(() => {
           const visible = alerts?.alerts?.filter(a => a.status !== '완료' && a.type !== '캘린더') || []
@@ -665,69 +644,11 @@ export default function App() {
           return <CalendarCard items={calItems} />
         })()}
 
-        {/* 🧱 1인자 빌드업 Cheat Sheet (영구 레퍼런스) */}
-        <CheatSheet />
+        <FocusFour />
 
-        {/* 🎓 12주 학습 프로그램 */}
+        {/* 📚 Mastery 6주 커리큘럼 */}
         <StudyProgram />
 
-        {/* 숫자 카드 */}
-        <div className={styles.cols2}>
-          <Card title="진행 중 프로젝트">
-            <div className={styles.stat}>{filteredProjects.length}</div>
-            <div className={styles.statSub}>AX팀 {axProjects.length} · 개인AX {personalAxProjects.length} · 성당 {churchProjects.length} · Creative {creativeProjects.length}</div>
-          </Card>
-
-          <Card title="완료된 프로젝트">
-            <div className={styles.stat}>2</div>
-            <div className={styles.statSub}>사진 아카이브 · AI 전자책</div>
-          </Card>
-        </div>
-
-        {/* 노션 주간업무로그 폐기 (2026-05-09) — JIRA 전환 예정 */}
-
-        {/* 프로젝트 현황 — 3카드 균형 (AX 본업 / 개인 관리 / Creative+성당) */}
-        <div className={styles.cols3}>
-          <Card title="🎯 AX팀 프로젝트">
-            {axProjects.length > 0 ? axProjects.map(p => (
-              <ProjectRow key={p.href} href={p.href} name={p.assignee ? p.name + ' (' + p.assignee + ')' : p.name} badge={p.badge} type={p.type} due={p.due} />
-            )) : <div className={styles.noResult}>검색 결과 없음</div>}
-            <a className={styles.moreLink} href={NOTION.projects} target="_blank" rel="noreferrer">
-              전체 프로젝트 DB →
-            </a>
-          </Card>
-
-          <Card title="🛠 개인 관리">
-            {personalAxProjects.length > 0 ? personalAxProjects.map(p => (
-              <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} due={p.due} />
-            )) : <div className={styles.noResult}>—</div>}
-            <a className={styles.moreLink} href={NOTION.projects} target="_blank" rel="noreferrer">
-              전체 프로젝트 DB →
-            </a>
-          </Card>
-
-          <Card title="🎬 AI Creative · ⛪ 성당">
-            {creativeProjects.length > 0 && creativeProjects.map(p => (
-              <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} due={p.due} />
-            ))}
-            {churchProjects.length > 0 && (
-              <>
-                <div style={{ fontSize: 12, fontWeight: 600, color: '#64748b', margin: '10px 0 4px', borderTop: '1px dashed #cbd5e1', paddingTop: 8 }}>
-                  ⛪ 성당 기획팀
-                </div>
-                {churchProjects.map(p => (
-                  <ProjectRow key={p.href} href={p.href} name={p.name} badge={p.badge} type={p.type} due={p.due} />
-                ))}
-              </>
-            )}
-            {creativeProjects.length === 0 && churchProjects.length === 0 && (
-              <div className={styles.noResult}>검색 결과 없음</div>
-            )}
-            <a className={styles.moreLink} href="https://docs.google.com/spreadsheets/d/18A5JqnsKd4j6wCCtrHZEkKl11NYb2xpKRH13PfzgNF4/edit?gid=0#gid=0" target="_blank" rel="noreferrer">
-              📋 성당 월별보고 →
-            </a>
-          </Card>
-        </div>
 
         {/* 메모 */}
         <Card title="📝 메모" className={styles.memoCard}>
@@ -760,16 +681,6 @@ export default function App() {
           </div>
         </Card>
 
-        {/* 캘린더 */}
-        <Card title="📅 일정 (Google Calendar)">
-          <iframe
-            className={styles.calFrame}
-            src={CAL_URL}
-            frameBorder="0"
-            scrolling="no"
-            title="Google Calendar"
-          />
-        </Card>
       </div>
     </div>
   )
